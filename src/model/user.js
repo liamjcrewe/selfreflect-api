@@ -1,25 +1,18 @@
 import pool from '../db'
 import bcrypt from 'bcrypt'
+import handleDBErr from './error'
 
 export const create = (email, password, callback) => {
   pool.getConnection((err, connection) => {
     if (err) {
-      connection.release()
-
-      callback(err)
-
-      return
+      return handleDBErr(err, connection, callback)
     }
 
     const saltRounds = 10
 
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
-        connection.release()
-
-        callback(err)
-
-        return
+        return handleDBErr(err, connection, callback)
       }
 
       connection.query(
@@ -27,11 +20,7 @@ export const create = (email, password, callback) => {
         [email, hash],
         (err, result) => {
           if (err) {
-            connection.release()
-
-            callback(err)
-
-            return
+            return handleDBErr(err, connection, callback)
           }
 
           connection.query(
@@ -39,11 +28,7 @@ export const create = (email, password, callback) => {
             [result.insertId],
             (err, result) => {
               if (err) {
-                connection.release()
-
-                callback(err)
-
-                return
+                return handleDBErr(err, connection, callback)
               }
 
               connection.release()
