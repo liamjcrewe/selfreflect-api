@@ -1,4 +1,4 @@
-import { create as createUser } from '../model/user'
+import { create as createUser, get as getUser } from '../model/user'
 
 export const create = (req, res) => {
   const email = req.email
@@ -20,5 +20,23 @@ export const create = (req, res) => {
     res.status(201).set({
       'Location': '/users/' + user.id
     }).json(user)
+  })
+}
+
+export const get = (id, res) => {
+  if (!Number.isInteger(id) || !(id > 0)) {
+    res.status(400).json({ error: 'Invalid user id' })
+
+    return
+  }
+
+  getUser(id, (err, user) => {
+    if (err) {
+      res.status(500).json({ error: 'DB error' })
+
+      return
+    }
+
+    res.status(200).json(user)
   })
 }

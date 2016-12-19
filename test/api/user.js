@@ -39,5 +39,43 @@ describe('Users endpoint', () => {
 
         done(err)
       })
+  }),
+  it('should retrieve a user when given a valid id', done => {
+    request.post('/users')
+      .send({
+        email: 'test@test.com',
+        password: 'testpassword'
+      })
+      .end((err, res) => {
+        const id = res.body.id
+        request.get('/users/' + id)
+          .expect(200)
+          .end((err, res) => {
+            expect(res.body).to.eql({
+              id: id,
+              email: 'test@test.com'
+            })
+
+            done()
+          })
+      })
+  }),
+  it('should report an error for invalid user id', done => {
+    request.get('/users/' + 0)
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.error).to.eql('Invalid user id')
+
+        done()
+      })
+  }),
+  it('should report an error for invalid user id type', done => {
+    request.get('/users/invalid')
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.error).to.eql('Invalid user id')
+
+        done()
+      })
   })
 })

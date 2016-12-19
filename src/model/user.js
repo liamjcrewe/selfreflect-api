@@ -41,3 +41,25 @@ export const create = (email, password, callback) => {
     })
   })
 }
+
+export const get = (id, callback) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return handleDBErr(err, connection, callback)
+    }
+
+    connection.query(
+      'SELECT id, email FROM user WHERE id = ?',
+      [id],
+      (err, result) => {
+        if (err) {
+          return handleDBErr(err, connection, callback)
+        }
+
+        connection.release()
+
+        callback(false, result[0])
+      }
+    )
+  })
+}
