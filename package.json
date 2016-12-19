@@ -26,6 +26,7 @@
     "babel-preset-stage-2": "^6.11.0",
     "babel-register": "^6.11.6",
     "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "nodemon": "^1.10.0",
     "sinon": "^1.17.6",
