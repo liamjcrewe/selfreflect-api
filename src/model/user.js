@@ -48,7 +48,7 @@ export const create = (email, password, callback) => {
 
               connection.release()
 
-              callback(false, result)
+              callback(false, result[0])
             }
           )
         }

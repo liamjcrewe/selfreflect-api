@@ -17,6 +17,8 @@ export const create = (req, res) => {
       return
     }
 
-    res.json(user)
+    res.status(201).set({
+      'Location': '/users/' + user.id
+    }).json(user)
   })
 }
