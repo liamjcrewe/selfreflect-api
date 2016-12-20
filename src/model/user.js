@@ -2,13 +2,13 @@ import pool from '../db'
 import bcrypt from 'bcrypt'
 import handleDBErr from './error'
 
+const saltRounds = 10
+
 export const create = (email, password, callback) => {
   pool.getConnection((err, connection) => {
     if (err) {
       return handleDBErr(err, connection, callback)
     }
-
-    const saltRounds = 10
 
     bcrypt.hash(password, saltRounds, (err, hash) => {
       if (err) {
@@ -61,5 +61,43 @@ export const get = (id, callback) => {
         callback(false, result[0])
       }
     )
+  })
+}
+
+export const put = (id, email, password, callback) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return handleDBErr(err, connection, callback)
+    }
+
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      if (err) {
+        return handleDBErr(err, connection, callback)
+      }
+
+      connection.query(
+        'UPDATE user SET email = ?, password = ? WHERE id = ?',
+        [email, hash, id],
+        (err, result) => {
+          if (err) {
+            return handleDBErr(err, connection, callback)
+          }
+
+          connection.query(
+            'SELECT id, email FROM user WHERE id = ?',
+            [id],
+            (err, result) => {
+              if (err) {
+                return handleDBErr(err, connection, callback)
+              }
+
+              connection.release()
+
+              callback(false, result[0])
+            }
+          )
+        }
+      )
+    })
   })
 }

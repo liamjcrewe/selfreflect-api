@@ -77,5 +77,109 @@ describe('Users endpoint', () => {
 
         done()
       })
+  }),
+  it('should update a user\'s email', done => {
+    const initialUser = {
+      email: 'test@test.com',
+      password: 'testpassword'
+    }
+    const updatedUser = {
+      email: 'test2@test.com',
+      password: 'testpassword'
+    }
+
+    request.post('/users')
+      .send(initialUser)
+      .end((err, res) => {
+        const id = res.body.id
+        request.put('/users/' + id)
+          .send(updatedUser)
+          .expect(200)
+          .end((err, res) => {
+            expect(res.body).to.eql({
+              id: id,
+              email: updatedUser.email
+            })
+
+            done()
+          })
+      })
+  }),
+  it('should update a user\'s password', done => {
+    const initialUser = {
+      email: 'test@test.com',
+      password: 'testpassword'
+    }
+    const updatedUser = {
+      email: 'test@test.com',
+      password: 'testpassword2'
+    }
+
+    request.post('/users')
+      .send(initialUser)
+      .end((err, res) => {
+        const id = res.body.id
+        request.put('/users/' + id)
+          .send(updatedUser)
+          .expect(200)
+          .end((err, res) => {
+            expect(res.body).to.eql({
+              id: id,
+              email: initialUser.email
+            })
+
+            done()
+          })
+      })
+  }),
+  it('should reject put with no email', done => {
+    const initialUser = {
+      email: 'test@test.com',
+      password: 'testpassword'
+    }
+    const updatedUser = {
+      password: 'testpassword'
+    }
+
+    request.post('/users')
+      .send(initialUser)
+      .end((err, res) => {
+        const id = res.body.id
+        request.put('/users/' + id)
+          .send(updatedUser)
+          .expect(400)
+          .end((err, res) => {
+            expect(res.body.error).to.eql(
+              'Missing id, email or password field(s)'
+            )
+
+            done()
+          })
+      })
+  }),
+  it('should reject put with no email', done => {
+    const initialUser = {
+      email: 'test@test.com',
+      password: 'testpassword'
+    }
+    const updatedUser = {
+      email: 'test@test.com',
+    }
+
+    request.post('/users')
+      .send(initialUser)
+      .end((err, res) => {
+        const id = res.body.id
+        request.put('/users/' + id)
+          .send(updatedUser)
+          .expect(400)
+          .end((err, res) => {
+            expect(res.body.error).to.eql(
+              'Missing id, email or password field(s)'
+            )
+
+            done()
+          })
+      })
   })
 })

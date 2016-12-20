@@ -1,6 +1,10 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import { create as createUser, get as getUser } from './controller/user'
+import {
+  create as createUser,
+  get as getUser,
+  put as putUser
+} from './controller/user'
 
 /* Base Setup */
 let app = express()
@@ -12,15 +16,15 @@ app.use(bodyParser.json())
 
 /* Routes */
 app.post('/users', (req, res) => {
-  res = createUser(req.body, res)
+  createUser(req.body, res)
 })
 
 app.get('/users/:id', (req, res) => {
-  res = getUser(parseInt(req.params.id, 10), res)
+  getUser(parseInt(req.params.id, 10), res)
 })
 
 app.put('/users/:id', (req, res) => {
-  res.json({ message: 'Update user' })
+  putUser(parseInt(req.params.id, 10), req.body, res)
 })
 
 app.delete('/users/:id', (req, res) => {

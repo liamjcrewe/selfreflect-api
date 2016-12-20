@@ -1,8 +1,16 @@
-import { create as createUser, get as getUser } from '../model/user'
+import {
+  create as createUser,
+  get as getUser,
+  put as putUser
+} from '../model/user'
 
-export const create = (req, res) => {
-  const email = req.email
-  const password = req.password // to be hashed
+const isValidId = id => {
+  return Number.isInteger(id) && (id > 0)
+}
+
+export const create = (body, res) => {
+  const email = body.email
+  const password = body.password // to be hashed
 
   if (!email || !password) {
     res.status(400).json({ error: 'Missing email or password field(s)' })
@@ -24,7 +32,7 @@ export const create = (req, res) => {
 }
 
 export const get = (id, res) => {
-  if (!Number.isInteger(id) || !(id > 0)) {
+  if (!isValidId(id)) {
     res.status(400).json({ error: 'Invalid user id' })
 
     return
@@ -38,5 +46,26 @@ export const get = (id, res) => {
     }
 
     res.status(200).json(user)
+  })
+}
+
+export const put = (id, body, res) => {
+  const email = body.email
+  const password = body.password // to be hashed
+
+  if (!isValidId(id) || !email || !password) {
+    res.status(400).json({ error: 'Missing id, email or password field(s)' })
+
+    return
+  }
+
+  putUser(id, email, password, (err, user) => {
+    if (err) {
+      res.status(500).json({ error: 'DB error' })
+
+      return
+    }
+
+    res.status(201).json(user)
   })
 }
