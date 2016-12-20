@@ -6,11 +6,13 @@ const saltRounds = 10
 
 export const create = (email, password, callback) => {
   pool.getConnection((err, connection) => {
+    /* istanbul ignore if */
     if (err) {
       return handleDBErr(err, connection, callback)
     }
 
     bcrypt.hash(password, saltRounds, (err, hash) => {
+      /* istanbul ignore if */
       if (err) {
         return handleDBErr(err, connection, callback)
       }
@@ -19,6 +21,7 @@ export const create = (email, password, callback) => {
         'INSERT INTO user(email, password) VALUES (?, ?)',
         [email, hash],
         (err, result) => {
+          /* istanbul ignore if */
           if (err) {
             return handleDBErr(err, connection, callback)
           }
@@ -27,6 +30,7 @@ export const create = (email, password, callback) => {
             'SELECT id, email FROM user WHERE id = ?',
             [result.insertId],
             (err, result) => {
+              /* istanbul ignore if */
               if (err) {
                 return handleDBErr(err, connection, callback)
               }
@@ -44,6 +48,7 @@ export const create = (email, password, callback) => {
 
 export const get = (id, callback) => {
   pool.getConnection((err, connection) => {
+    /* istanbul ignore if */
     if (err) {
       return handleDBErr(err, connection, callback)
     }
@@ -52,6 +57,31 @@ export const get = (id, callback) => {
       'SELECT id, email FROM user WHERE id = ?',
       [id],
       (err, result) => {
+        /* istanbul ignore if */
+        if (err) {
+          return handleDBErr(err, connection, callback)
+        }
+
+        connection.release()
+
+        callback(false, result[0])
+      }
+    )
+  })
+}
+
+export const getUserByEmail = (email, callback) => {
+  pool.getConnection((err, connection) => {
+    /* istanbul ignore if */
+    if (err) {
+      return handleDBErr(err, connection, callback)
+    }
+
+    connection.query(
+      'SELECT id, email FROM user WHERE email = ?',
+      [email],
+      (err, result) => {
+        /* istanbul ignore if */
         if (err) {
           return handleDBErr(err, connection, callback)
         }
@@ -66,11 +96,13 @@ export const get = (id, callback) => {
 
 export const put = (id, email, password, callback) => {
   pool.getConnection((err, connection) => {
+    /* istanbul ignore if */
     if (err) {
       return handleDBErr(err, connection, callback)
     }
 
     bcrypt.hash(password, saltRounds, (err, hash) => {
+      /* istanbul ignore if */
       if (err) {
         return handleDBErr(err, connection, callback)
       }
@@ -79,6 +111,7 @@ export const put = (id, email, password, callback) => {
         'UPDATE user SET email = ?, password = ? WHERE id = ?',
         [email, hash, id],
         (err, result) => {
+          /* istanbul ignore if */
           if (err) {
             return handleDBErr(err, connection, callback)
           }
@@ -87,6 +120,7 @@ export const put = (id, email, password, callback) => {
             'SELECT id, email FROM user WHERE id = ?',
             [id],
             (err, result) => {
+              /* istanbul ignore if */
               if (err) {
                 return handleDBErr(err, connection, callback)
               }
@@ -104,6 +138,7 @@ export const put = (id, email, password, callback) => {
 
 export const remove = (id, callback) => {
   pool.getConnection((err, connection) => {
+    /* istanbul ignore if */
     if (err) {
       return handleDBErr(err, connection, callback)
     }
@@ -112,6 +147,7 @@ export const remove = (id, callback) => {
       'SELECT id FROM user WHERE id = ?',
       [id],
       (err, result) => {
+        /* istanbul ignore if */
         if (err) {
           return handleDBErr(err, connection, callback)
         }
@@ -120,6 +156,7 @@ export const remove = (id, callback) => {
           'DELETE FROM user WHERE id = ?',
           [id],
           (err, result) => {
+            /* istanbul ignore if */
             if (err) {
               return handleDBErr(err, connection, callback)
             }

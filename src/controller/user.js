@@ -1,6 +1,7 @@
 import {
   create as createUser,
   get as getUser,
+  getUserByEmail,
   put as putUser,
   remove as removeUser
 } from '../model/user'
@@ -19,16 +20,33 @@ export const create = (body, res) => {
     return
   }
 
-  createUser(email, password, (err, user) => {
+  getUserByEmail(email, (err, user) => {
+    /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
 
       return
     }
 
-    res.status(201).set({
-      'Location': '/users/' + user.id
-    }).json(user)
+    // User already exists
+    if (user) {
+      res.status(409).json({ error: 'Email already in use' })
+
+      return
+    }
+
+    createUser(email, password, (err, user) => {
+      /* istanbul ignore if */
+      if (err) {
+        res.status(500).json({ error: 'DB error' })
+
+        return
+      }
+
+      res.status(201).set({
+        'Location': '/users/' + user.id
+      }).json(user)
+    })
   })
 }
 
@@ -40,6 +58,7 @@ export const get = (id, res) => {
   }
 
   getUser(id, (err, user) => {
+    /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
 
@@ -73,6 +92,7 @@ export const put = (id, body, res) => {
   }
 
   putUser(id, email, password, (err, user) => {
+    /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
 
@@ -91,6 +111,7 @@ export const remove = (id, res) => {
   }
 
   getUser(id, (err, user) => {
+    /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
 
@@ -104,13 +125,14 @@ export const remove = (id, res) => {
     }
 
     removeUser(id, err => {
+      /* istanbul ignore if */
       if (err) {
         res.status(500).json({ error: 'DB error' })
 
         return
       }
 
-      res.status(200)
+      res.status(200).json({ message: 'User deleted' })
     })
   })
 }
