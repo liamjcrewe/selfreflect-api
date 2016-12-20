@@ -3,7 +3,8 @@ import bodyParser from 'body-parser'
 import {
   create as createUser,
   get as getUser,
-  put as putUser
+  put as putUser,
+  remove as removeUser
 } from './controller/user'
 
 /* Base Setup */
@@ -28,7 +29,7 @@ app.put('/users/:id', (req, res) => {
 })
 
 app.delete('/users/:id', (req, res) => {
-  res.json({ message: 'Delete user' })
+  removeUser(parseInt(req.params.id, 10), res)
 })
 
 app.get('/users/:id/wellbeing', (req, res) => {

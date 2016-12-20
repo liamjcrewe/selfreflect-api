@@ -1,7 +1,8 @@
 import {
   create as createUser,
   get as getUser,
-  put as putUser
+  put as putUser,
+  remove as removeUser
 } from '../model/user'
 
 const isValidId = id => {
@@ -33,7 +34,7 @@ export const create = (body, res) => {
 
 export const get = (id, res) => {
   if (!isValidId(id)) {
-    res.status(400).json({ error: 'Invalid user id' })
+    res.status(404).json({ error: 'Invalid user id' })
 
     return
   }
@@ -45,16 +46,28 @@ export const get = (id, res) => {
       return
     }
 
+    if (!user) {
+      res.status(404).json({ error: 'No user found with this id' })
+
+      return
+    }
+
     res.status(200).json(user)
   })
 }
 
 export const put = (id, body, res) => {
+  if (!isValidId(id)) {
+    res.status(404).json({ error: 'Missing id' })
+
+    return
+  }
+
   const email = body.email
   const password = body.password // to be hashed
 
-  if (!isValidId(id) || !email || !password) {
-    res.status(400).json({ error: 'Missing id, email or password field(s)' })
+  if (!email || !password) {
+    res.status(400).json({ error: 'Missing email or password field(s)' })
 
     return
   }
@@ -66,6 +79,38 @@ export const put = (id, body, res) => {
       return
     }
 
-    res.status(201).json(user)
+    res.status(200).json(user)
+  })
+}
+
+export const remove = (id, res) => {
+  if (!isValidId(id)) {
+    res.status(404).json({ error: 'Missing id' })
+
+    return
+  }
+
+  getUser(id, (err, user) => {
+    if (err) {
+      res.status(500).json({ error: 'DB error' })
+
+      return
+    }
+    
+    if (!user) {
+      res.status(404).json({ error: 'No user found with this id' })
+
+      return
+    }
+
+    removeUser(id, err => {
+      if (err) {
+        res.status(500).json({ error: 'DB error' })
+
+        return
+      }
+
+      res.status(200)
+    })
   })
 }

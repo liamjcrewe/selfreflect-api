@@ -101,3 +101,35 @@ export const put = (id, email, password, callback) => {
     })
   })
 }
+
+export const remove = (id, callback) => {
+  pool.getConnection((err, connection) => {
+    if (err) {
+      return handleDBErr(err, connection, callback)
+    }
+
+    connection.query(
+      'SELECT id FROM user WHERE id = ?',
+      [id],
+      (err, result) => {
+        if (err) {
+          return handleDBErr(err, connection, callback)
+        }
+
+        connection.query(
+          'DELETE FROM user WHERE id = ?',
+          [id],
+          (err, result) => {
+            if (err) {
+              return handleDBErr(err, connection, callback)
+            }
+
+            connection.release()
+
+            callback(false)
+          }
+        )
+      }
+    )
+  })
+}
