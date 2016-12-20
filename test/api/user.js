@@ -1,13 +1,19 @@
+import { runOnEmptyDB, insertUser } from '../helper/db.js'
+
+const testEmail = 'test@test.com'
+// hash for password 'password'
+const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzWgS'
+
 describe('Users endpoint', () => {
   it('should create and return a user', done => {
     request.post('/users')
       .send({
-        email: 'test@test.com',
+        email: testEmail,
         password: 'testpassword'
       })
       .expect(201)
       .end((err, res) => {
-        expect(res.body.email).to.eql('test@test.com')
+        expect(res.body.email).to.eql(testEmail)
 
         const id = res.body.id
 
@@ -16,22 +22,42 @@ describe('Users endpoint', () => {
         done(err)
       })
   }),
+  it('should not create a user with duplicate email', done => {
+    const user = {
+      email: testEmail,
+      password: 'password'
+    }
+
+    const test = id => {
+      request.post('/users')
+        .send(user)
+        .expect(409)
+        .end((err, res) => {
+          expect(res.body.error).to.eql('Email already in use')
+
+          done()
+        })
+    }
+
+    // empty db, which calls insert user, which calls test with insert id
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
   it('should not create a user if no email given', done => {
     request.post('/users')
-      .send({
-        password: 'testpassword'
-      })
-      .expect(400)
-      .end((err, res) => {
-        expect(res.body.error).to.eql('Missing email or password field(s)')
+    .send({
+      password: 'testpassword'
+    })
+    .expect(400)
+    .end((err, res) => {
+      expect(res.body.error).to.eql('Missing email or password field(s)')
 
-        done(err)
-      })
+      done(err)
+    })
   }),
   it('should not create a user if no password given', done => {
     request.post('/users')
       .send({
-        email: 'test@test.com'
+        email: testEmail
       })
       .expect(400)
       .end((err, res) => {
@@ -41,24 +67,21 @@ describe('Users endpoint', () => {
       })
   }),
   it('should retrieve a user when given a valid id', done => {
-    request.post('/users')
-      .send({
-        email: 'test@test.com',
-        password: 'testpassword'
-      })
-      .end((err, res) => {
-        const id = res.body.id
-        request.get('/users/' + id)
-          .expect(200)
-          .end((err, res) => {
-            expect(res.body).to.eql({
-              id: id,
-              email: 'test@test.com'
-            })
+    const test = id => {
+      request.get('/users/' + id)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.eql({
+            id: id,
+            email: testEmail
           })
 
-        done()
-      })
+          done()
+        })
+    }
+
+    // empty db, which calls insert user, which calls test with insert id
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should report an error for invalid user id', done => {
     request.get('/users/' + 0)
@@ -88,157 +111,128 @@ describe('Users endpoint', () => {
       })
   }),
   it('should update a user\'s email', done => {
-    const initialUser = {
-      email: 'test@test.com',
-      password: 'testpassword'
-    }
     const updatedUser = {
-      email: 'test2@test.com',
-      password: 'testpassword'
+      email: 'test2@test.com', // change
+      password: 'password' // no change
     }
 
-    request.post('/users')
-      .send(initialUser)
-      .end((err, res) => {
-        const id = res.body.id
-        request.put('/users/' + id)
-          .send(updatedUser)
-          .expect(200)
-          .end((err, res) => {
-            expect(res.body).to.eql({
-              id: id,
-              email: updatedUser.email
-            })
+    const test = id => {
+      request.put('/users/' + id)
+        .send(updatedUser)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.eql({
+            id: id,
+            email: updatedUser.email
           })
 
-        done()
-      })
+          done()
+        })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should update a user\'s password', done => {
-    const initialUser = {
-      email: 'test@test.com',
-      password: 'testpassword'
-    }
     const updatedUser = {
-      email: 'test@test.com',
-      password: 'testpassword2'
+      email: testEmail, // no change
+      password: 'password2' // change
     }
 
-    request.post('/users')
-      .send(initialUser)
-      .end((err, res) => {
-        const id = res.body.id
-        request.put('/users/' + id)
-          .send(updatedUser)
-          .expect(200)
-          .end((err, res) => {
-            expect(res.body).to.eql({
-              id: id,
-              email: initialUser.email
-            })
+    const test = id => {
+      request.put('/users/' + id)
+        .send(updatedUser)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body).to.eql({
+            id: id,
+            email: testEmail
           })
 
-        done()
-      })
+          done()
+        })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should reject put with no email', done => {
-    const initialUser = {
-      email: 'test@test.com',
-      password: 'testpassword'
-    }
     const updatedUser = {
-      password: 'testpassword'
+      password: 'password'
     }
 
-    request.post('/users')
-      .send(initialUser)
-      .end((err, res) => {
-        const id = res.body.id
-        request.put('/users/' + id)
-          .send(updatedUser)
-          .expect(400)
-          .end((err, res) => {
-            expect(res.body.error).to.eql(
-              'Missing email or password field(s)'
-            )
-          })
+    const test = id => {
+      request.put('/users/' + id)
+        .send(updatedUser)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body.error).to.eql(
+            'Missing email or password field(s)'
+          )
 
-        done()
-      })
+          done()
+        })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should reject put with no password', done => {
-    const initialUser = {
-      email: 'test@test.com',
-      password: 'testpassword'
-    }
     const updatedUser = {
-      email: 'test@test.com',
+      email: testEmail,
     }
 
-    request.post('/users')
-      .send(initialUser)
-      .end((err, res) => {
-        const id = res.body.id
-        request.put('/users/' + id)
-          .send(updatedUser)
-          .expect(400)
-          .end((err, res) => {
-            expect(res.body.error).to.eql(
-              'Missing email or password field(s)'
-            )
-          })
+    const test = id => {
+      request.put('/users/' + id)
+        .send(updatedUser)
+        .expect(400)
+        .end((err, res) => {
+          expect(res.body.error).to.eql(
+            'Missing email or password field(s)'
+          )
 
-        done()
-      })
+          done()
+        })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should reject put with invalid id', done => {
-    const initialUser = {
-      email: 'test@test.com',
-      password: 'testpassword'
-    }
     const updatedUser = {
-      email: 'test@test.com',
+      email: testEmail,
+      password: 'password'
     }
 
-    request.post('/users')
-      .send(initialUser)
-      .end((err, res) => {
-        request.put('/users/' + 0)
-          .send(updatedUser)
-          .expect(404)
-          .end((err, res) => {
-            expect(res.body.error).to.eql(
-              'Missing id'
-            )
-          })
+    const test = id => {
+      request.put('/users/' + 0)
+        .send(updatedUser)
+        .expect(404)
+        .end((err, res) => {
+          expect(res.body.error).to.eql(
+            'Missing id'
+          )
 
-        done()
-      })
+          done()
+        })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should delete a user', done => {
-    const user = {
-      email: 'test@test.com',
-      password: 'testpassword'
+    const test = id => {
+      request.delete('/users/' + id)
+        .expect(200)
+        .end((err, res) => {
+          expect(res.body.message).to.eql('User deleted')
+
+          request.get('/users/' + id)
+            .expect(404)
+            .end((err, res) => {
+              expect(res.body.error).to.eql('No user found with this id')
+
+              done()
+            })
+        })
     }
 
-    request.post('/users')
-      .send(user)
-      .end((err, res) => {
-        const id = res.body.id
-        request.delete('/users/' + id)
-          .expect(200)
-          .end((err, res) => {
-            request.get('/users/' + id)
-              .expect(404)
-              .end((err, res) => {
-                console.log(res)
-
-                expect(res.body.error).to.eql('No user found with this id')
-              })
-          })
-
-        done()
-      })
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should reject deletion of user with invalid id', done => {
     request.delete('/users/invalid')
