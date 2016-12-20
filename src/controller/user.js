@@ -96,7 +96,7 @@ export const remove = (id, res) => {
 
       return
     }
-    
+
     if (!user) {
       res.status(404).json({ error: 'No user found with this id' })
 
