@@ -3,6 +3,25 @@ import { getByEmail as getUserByEmail } from '../model/user'
 import bcrypt from 'bcrypt'
 import { secret } from '../../config/auth'
 
+const getExpiry = secondsFromNow => {
+  const nowInSeconds = Math.floor(Date.now() / 1000)
+
+  return nowInSeconds + (60 * 60 * 24)
+}
+
+const generateToken = (id, expiry, res) => {
+  jwt.sign({ id: id, exp: expiry }, secret, {}, (err, token) => {
+    /* istanbul ignore if */
+    if (err) {
+      res.status(500).json({ error: 'An error occurred' })
+
+      return
+    }
+
+    res.status(200).json({ id: id, token: token })
+  })
+}
+
 export const create = (body, res) => {
   const email = body.email
   const password = body.password
@@ -36,20 +55,17 @@ export const create = (body, res) => {
         return
       }
 
-      const nowInSeconds = Math.floor(Date.now() / 1000)
       // Expire in one day
-      const expiry = nowInSeconds + (60 * 60 * 24)
+      const expiry = getExpiry(60 * 60 * 24)
 
-      jwt.sign({ id: user.id, exp: expiry }, secret, {}, (err, token) => {
-        /* istanbul ignore if */
-        if (err) {
-          res.status(500).json({ error: 'An error occurred' })
-
-          return
-        }
-
-        res.status(200).json({ id: user.id, token: token })
-      })
+      generateToken(user.id, expiry, res)
     })
   })
+}
+
+export const refresh = (token, res) => {
+  // Expire in one day
+  const expiry = getExpiry(60 * 60 * 24)
+
+  generateToken(token.id, expiry, res)
 }

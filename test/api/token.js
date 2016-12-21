@@ -15,10 +15,10 @@ describe('Tokens endpoint', () => {
           password: 'password'
         })
         .expect(200)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.id).to.eql(id)
 
-          jwt.verify(res.body.token, secret, (err, decoded) => {
+          jwt.verify(res.body.token, secret, (_, decoded) => {
             expect(decoded.id).to.eql(id)
 
             expect(decoded.exp).to.be.a('number')
@@ -38,7 +38,7 @@ describe('Tokens endpoint', () => {
           password: 'invalid'
         })
         .expect(401)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.message).to.eql('Invalid email or password')
 
           done()
@@ -55,11 +55,39 @@ describe('Tokens endpoint', () => {
           password: 'password'
         })
         .expect(401)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.message).to.eql('Invalid email or password')
 
           done()
         })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
+  it('refreshes a valid access token', done => {
+    const test = id => {
+      // 5 minute expiry
+      const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
+
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/tokens')
+          .set('Authorization', 'Bearer ' + token)
+          .expect(200)
+          .end((_, res) => {
+            expect(res.body.id).to.eql(id)
+
+            jwt.verify(res.body.token, secret, (_, decoded) => {
+              expect(decoded.id).to.eql(id)
+
+              expect(decoded.exp).to.be.a('number')
+
+              expect(decoded.exp).to.be.above(expiry)
+
+              done()
+            })
+          })
+      })
+
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))

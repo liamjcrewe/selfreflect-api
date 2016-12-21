@@ -1,22 +1,48 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import jwt from 'express-jwt'
+
 import {
   create as createUser,
   get as getUser,
   put as putUser,
   remove as removeUser
 } from './controller/user'
+
 import {
-  create as createToken
+  create as createToken,
+  refresh as refreshToken
 } from './controller/token'
 
-/* Base Setup */
+import { secret } from '../config/auth'
+
+/* Base Setup and Middleware*/
 let app = express()
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
+// Configure app to use bodyParser to get json data from post
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+
+// Decode Authorization header token
+const jwtMiddleware = jwt({
+  secret: secret,
+  requestProperty: 'token'
+})
+
+// Apply to all paths except "/users" and "POST /tokens"
+app.use(jwtMiddleware.unless({
+  path: [
+    '/users',
+    { url: '/tokens', methods: ['POST'] }
+  ]
+}))
+
+// Error handling
+app.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+})
 
 /* Routes */
 app.post('/users', (req, res) => {
@@ -52,7 +78,11 @@ app.post('/tokens', (req, res) => {
 })
 
 app.put('/tokens', (req, res) => {
-  res.json({ message: 'Token refresh' })
+  refreshToken(req.token, res)
+})
+
+app.use(function (req, res, next) {
+  res.status(404).json({ message: 'No resource here' })
 })
 
 /* Start server */
