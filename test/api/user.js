@@ -13,14 +13,14 @@ describe('Users endpoint', () => {
         password: 'testpassword'
       })
       .expect(201)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.email).to.eql(testEmail)
 
         const id = res.body.id
 
         expect(res.headers.location).to.eql('/users/' + id)
 
-        done(err)
+        done()
       })
     }
 
@@ -36,7 +36,7 @@ describe('Users endpoint', () => {
       request.post('/users')
         .send(user)
         .expect(409)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.error).to.eql('Email already in use')
 
           done()
@@ -52,10 +52,10 @@ describe('Users endpoint', () => {
       password: 'testpassword'
     })
     .expect(400)
-    .end((err, res) => {
+    .end((_, res) => {
       expect(res.body.error).to.eql('Missing email or password field(s)')
 
-      done(err)
+      done()
     })
   }),
   it('should not create a user if no password given', done => {
@@ -64,17 +64,17 @@ describe('Users endpoint', () => {
         email: testEmail
       })
       .expect(400)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.error).to.eql('Missing email or password field(s)')
 
-        done(err)
+        done()
       })
   }),
   it('should retrieve a user when given a valid id', done => {
     const test = id => {
       request.get('/users/' + id)
         .expect(200)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body).to.eql({
             id: id,
             email: testEmail
@@ -90,7 +90,7 @@ describe('Users endpoint', () => {
   it('should report an error for invalid user id', done => {
     request.get('/users/' + 0)
       .expect(404)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.error).to.eql('Invalid user id')
 
         done()
@@ -99,7 +99,7 @@ describe('Users endpoint', () => {
   it('should report an error for invalid user id type', done => {
     request.get('/users/invalid')
       .expect(404)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.error).to.eql('Invalid user id')
 
         done()
@@ -108,7 +108,7 @@ describe('Users endpoint', () => {
   it('should return 404 for id of user that does not exist', done => {
     request.get('/users/9999')
       .expect(404)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.error).to.eql('No user found with this id')
 
         done()
@@ -124,7 +124,7 @@ describe('Users endpoint', () => {
       request.put('/users/' + id)
         .send(updatedUser)
         .expect(200)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body).to.eql({
             id: id,
             email: updatedUser.email
@@ -146,7 +146,7 @@ describe('Users endpoint', () => {
       request.put('/users/' + id)
         .send(updatedUser)
         .expect(200)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body).to.eql({
             id: id,
             email: testEmail
@@ -167,7 +167,7 @@ describe('Users endpoint', () => {
       request.put('/users/' + id)
         .send(updatedUser)
         .expect(400)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.error).to.eql(
             'Missing email or password field(s)'
           )
@@ -187,7 +187,7 @@ describe('Users endpoint', () => {
       request.put('/users/' + id)
         .send(updatedUser)
         .expect(400)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.error).to.eql(
             'Missing email or password field(s)'
           )
@@ -208,7 +208,7 @@ describe('Users endpoint', () => {
       request.put('/users/' + 0)
         .send(updatedUser)
         .expect(404)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.error).to.eql(
             'Missing id'
           )
@@ -223,12 +223,12 @@ describe('Users endpoint', () => {
     const test = id => {
       request.delete('/users/' + id)
         .expect(200)
-        .end((err, res) => {
+        .end((_, res) => {
           expect(res.body.message).to.eql('User deleted')
 
           request.get('/users/' + id)
             .expect(404)
-            .end((err, res) => {
+            .end((_, res) => {
               expect(res.body.error).to.eql('No user found with this id')
 
               done()
@@ -241,7 +241,7 @@ describe('Users endpoint', () => {
   it('should reject deletion of user with invalid id', done => {
     request.delete('/users/invalid')
       .expect(404)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.error).to.eql('Missing id')
 
         done()
@@ -250,7 +250,7 @@ describe('Users endpoint', () => {
   it('should reject deletion of user that does not exist', done => {
     request.delete('/users/9999')
       .expect(404)
-      .end((err, res) => {
+      .end((_, res) => {
         expect(res.body.error).to.eql('No user found with this id')
 
         done()
