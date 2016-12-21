@@ -6,7 +6,8 @@ const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzW
 
 describe('Users endpoint', () => {
   it('should create and return a user', done => {
-    request.post('/users')
+    const test = () => {
+      request.post('/users')
       .send({
         email: testEmail,
         password: 'testpassword'
@@ -21,6 +22,9 @@ describe('Users endpoint', () => {
 
         done(err)
       })
+    }
+
+    runOnEmptyDB(test)
   }),
   it('should not create a user with duplicate email', done => {
     const user = {
