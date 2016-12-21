@@ -1,5 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
+import jwt from 'express-jwt'
+
 import {
   create as createUser,
   get as getUser,
@@ -7,36 +9,108 @@ import {
   remove as removeUser
 } from './controller/user'
 
-/* Base Setup */
+import {
+  create as createToken,
+  refresh as refreshToken
+} from './controller/token'
+
+import { secret } from '../config/auth'
+
+/* Base Setup and Middleware*/
 let app = express()
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
+// Configure app to use bodyParser to get json data from post
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+// Decode Authorization header token
+const jwtMiddleware = jwt({
+  secret: secret,
+  requestProperty: 'token'
+})
+
+// Apply to all paths except "/users" and "POST /tokens"
+app.use(jwtMiddleware.unless({
+  path: [
+    '/users',
+    { url: '/tokens', methods: ['POST'] }
+  ]
+}))
+
+// Error handling
+app.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+})
+
 /* Routes */
+
+const isValidId = id => {
+  return Number.isInteger(id) && (id > 0)
+}
+
 app.post('/users', (req, res) => {
   createUser(req.body, res)
 })
 
 app.get('/users/:id', (req, res) => {
-  getUser(parseInt(req.params.id, 10), res)
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  getUser(id, res)
 })
 
 app.put('/users/:id', (req, res) => {
-  putUser(parseInt(req.params.id, 10), req.body, res)
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  putUser(id, req.body, res)
 })
 
 app.delete('/users/:id', (req, res) => {
-  removeUser(parseInt(req.params.id, 10), res)
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  removeUser(id, res)
 })
 
 app.get('/users/:id/wellbeing', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
   res.json({ message: 'Get user wellbeing data' })
 })
 
 app.post('/users/:id/wellbeing', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
   res.json({ message: 'Post user wellbeing data' })
 })
 
@@ -44,16 +118,16 @@ app.post('/users/recoverpassword', (req, res) => {
   res.json({ message: 'Password recovery' })
 })
 
-app.get('/sessions/:hash', (req, res) => {
-  res.json({ message: 'Get session' })
+app.post('/tokens', (req, res) => {
+  createToken(req.body, res)
 })
 
-app.post('/sessions', (req, res) => {
-  res.json({ message: 'Auth and session creation' })
+app.put('/tokens', (req, res) => {
+  refreshToken(req.token, res)
 })
 
-app.delete('/sessions', (req, res) => {
-  res.json({ message: 'Log out and session destruction' })
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Requested URL not found' })
 })
 
 /* Start server */

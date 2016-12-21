@@ -1,14 +1,10 @@
 import {
   create as createUser,
-  get as getUser,
-  getUserByEmail,
+  getById as getUserById,
+  getByEmail as getUserByEmail,
   put as putUser,
   remove as removeUser
 } from '../model/user'
-
-const isValidId = id => {
-  return Number.isInteger(id) && (id > 0)
-}
 
 export const create = (body, res) => {
   const email = body.email
@@ -43,6 +39,9 @@ export const create = (body, res) => {
         return
       }
 
+      // Don't want to send password back
+      delete user.password
+
       res.status(201).set({
         'Location': '/users/' + user.id
       }).json(user)
@@ -51,13 +50,7 @@ export const create = (body, res) => {
 }
 
 export const get = (id, res) => {
-  if (!isValidId(id)) {
-    res.status(404).json({ error: 'Invalid user id' })
-
-    return
-  }
-
-  getUser(id, (err, user) => {
+  getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
@@ -71,17 +64,14 @@ export const get = (id, res) => {
       return
     }
 
+    // Don't want to send password back
+    delete user.password
+
     res.status(200).json(user)
   })
 }
 
 export const put = (id, body, res) => {
-  if (!isValidId(id)) {
-    res.status(404).json({ error: 'Missing id' })
-
-    return
-  }
-
   const email = body.email
   const password = body.password // to be hashed
 
@@ -99,18 +89,15 @@ export const put = (id, body, res) => {
       return
     }
 
+    // Don't want to send password back
+    delete user.password
+
     res.status(200).json(user)
   })
 }
 
 export const remove = (id, res) => {
-  if (!isValidId(id)) {
-    res.status(404).json({ error: 'Missing id' })
-
-    return
-  }
-
-  getUser(id, (err, user) => {
+  getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
