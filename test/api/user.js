@@ -91,33 +91,8 @@ describe('Users endpoint', () => {
       })
     }
 
-    // empty db, which calls insert user, which calls test with insert id
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
-  }),
-  it('should report an error for invalid user id', done => {
-    jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
-      request.get('/users/' + 0)
-        .set('Authorization', 'Bearer ' + token)
-        .expect(404)
-        .end((_, res) => {
-          expect(res.body.error).to.eql('Invalid user id')
-
-          done()
-        })
-    })
-  }),
-  it('should report an error for invalid user id type', done => {
-    jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
-      request.get('/users/invalid')
-        .set('Authorization', 'Bearer ' + token)
-        .expect(404)
-        .end((_, res) => {
-          expect(res.body.error).to.eql('Invalid user id')
-
-          done()
-        })
-    })
-  }),
+  })
   it('should return 404 for id of user that does not exist', done => {
     jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
       request.get('/users/9999')
@@ -226,30 +201,6 @@ describe('Users endpoint', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('should reject put with invalid id', done => {
-    const updatedUser = {
-      email: testEmail,
-      password: 'password'
-    }
-
-    const test = id => {
-      jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + 0)
-          .set('Authorization', 'Bearer ' + token)
-          .send(updatedUser)
-          .expect(404)
-          .end((_, res) => {
-            expect(res.body.error).to.eql(
-              'Invalid user id'
-            )
-
-            done()
-          })
-      })
-    }
-
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
-  }),
   it('should delete a user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
@@ -272,18 +223,6 @@ describe('Users endpoint', () => {
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
-  }),
-  it('should reject deletion of user with invalid id', done => {
-    jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
-      request.delete('/users/invalid')
-        .set('Authorization', 'Bearer ' + token)
-        .expect(404)
-        .end((_, res) => {
-          expect(res.body.error).to.eql('Invalid user id')
-
-          done()
-        })
-    })
   }),
   it('should reject deletion of user that does not exist', done => {
     jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
