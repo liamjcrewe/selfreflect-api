@@ -6,6 +6,9 @@ import {
   put as putUser,
   remove as removeUser
 } from './controller/user'
+import {
+  create as createToken
+} from './controller/token'
 
 /* Base Setup */
 let app = express()
@@ -44,16 +47,12 @@ app.post('/users/recoverpassword', (req, res) => {
   res.json({ message: 'Password recovery' })
 })
 
-app.get('/sessions/:hash', (req, res) => {
-  res.json({ message: 'Get session' })
+app.post('/tokens', (req, res) => {
+  createToken(req.body, res)
 })
 
-app.post('/sessions', (req, res) => {
-  res.json({ message: 'Auth and session creation' })
-})
-
-app.delete('/sessions', (req, res) => {
-  res.json({ message: 'Log out and session destruction' })
+app.put('/tokens', (req, res) => {
+  res.json({ message: 'Token refresh' })
 })
 
 /* Start server */
