@@ -233,14 +233,14 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+      jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
         request.put('/users/' + 0)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(404)
           .end((_, res) => {
             expect(res.body.error).to.eql(
-              'Missing id'
+              'Invalid user id'
             )
 
             done()
@@ -279,7 +279,7 @@ describe('Users endpoint', () => {
         .set('Authorization', 'Bearer ' + token)
         .expect(404)
         .end((_, res) => {
-          expect(res.body.error).to.eql('Missing id')
+          expect(res.body.error).to.eql('Invalid user id')
 
           done()
         })

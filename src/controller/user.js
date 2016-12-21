@@ -6,10 +6,6 @@ import {
   remove as removeUser
 } from '../model/user'
 
-const isValidId = id => {
-  return Number.isInteger(id) && (id > 0)
-}
-
 export const create = (body, res) => {
   const email = body.email
   const password = body.password // to be hashed
@@ -54,12 +50,6 @@ export const create = (body, res) => {
 }
 
 export const get = (id, res) => {
-  if (!isValidId(id)) {
-    res.status(404).json({ error: 'Invalid user id' })
-
-    return
-  }
-
   getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
@@ -82,12 +72,6 @@ export const get = (id, res) => {
 }
 
 export const put = (id, body, res) => {
-  if (!isValidId(id)) {
-    res.status(404).json({ error: 'Missing id' })
-
-    return
-  }
-
   const email = body.email
   const password = body.password // to be hashed
 
@@ -113,12 +97,6 @@ export const put = (id, body, res) => {
 }
 
 export const remove = (id, res) => {
-  if (!isValidId(id)) {
-    res.status(404).json({ error: 'Missing id' })
-
-    return
-  }
-
   getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {

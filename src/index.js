@@ -45,27 +45,72 @@ app.use((err, req, res, next) => {
 })
 
 /* Routes */
+
+const isValidId = id => {
+  return Number.isInteger(id) && (id > 0)
+}
+
 app.post('/users', (req, res) => {
   createUser(req.body, res)
 })
 
 app.get('/users/:id', (req, res) => {
-  getUser(parseInt(req.params.id, 10), res)
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  getUser(id, res)
 })
 
 app.put('/users/:id', (req, res) => {
-  putUser(parseInt(req.params.id, 10), req.body, res)
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  putUser(id, req.body, res)
 })
 
 app.delete('/users/:id', (req, res) => {
-  removeUser(parseInt(req.params.id, 10), res)
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  removeUser(id, res)
 })
 
 app.get('/users/:id/wellbeing', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
   res.json({ message: 'Get user wellbeing data' })
 })
 
 app.post('/users/:id/wellbeing', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
   res.json({ message: 'Post user wellbeing data' })
 })
 
