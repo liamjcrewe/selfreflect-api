@@ -126,8 +126,8 @@ app.put('/tokens', (req, res) => {
   refreshToken(req.token, res)
 })
 
-app.use(function (req, res, next) {
-  res.status(404).json({ message: 'No resource here' })
+app.use((req, res, next) => {
+  res.status(404).json({ error: 'Requested URL not found' })
 })
 
 /* Start server */
