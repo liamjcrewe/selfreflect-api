@@ -1,7 +1,7 @@
 import {
   create as createUser,
-  get as getUser,
-  getUserByEmail,
+  getById as getUserById,
+  getByEmail as getUserByEmail,
   put as putUser,
   remove as removeUser
 } from '../model/user'
@@ -43,6 +43,9 @@ export const create = (body, res) => {
         return
       }
 
+      // Don't want to send password back
+      delete user.password
+
       res.status(201).set({
         'Location': '/users/' + user.id
       }).json(user)
@@ -57,7 +60,7 @@ export const get = (id, res) => {
     return
   }
 
-  getUser(id, (err, user) => {
+  getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
@@ -70,6 +73,9 @@ export const get = (id, res) => {
 
       return
     }
+
+    // Don't want to send password back
+    delete user.password
 
     res.status(200).json(user)
   })
@@ -99,6 +105,9 @@ export const put = (id, body, res) => {
       return
     }
 
+    // Don't want to send password back
+    delete user.password
+
     res.status(200).json(user)
   })
 }
@@ -110,7 +119,7 @@ export const remove = (id, res) => {
     return
   }
 
-  getUser(id, (err, user) => {
+  getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })

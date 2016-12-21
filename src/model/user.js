@@ -26,27 +26,14 @@ export const create = (email, password, callback) => {
             return handleDBErr(err, connection, callback)
           }
 
-          connection.query(
-            'SELECT id, email FROM user WHERE id = ?',
-            [result.insertId],
-            (err, result) => {
-              /* istanbul ignore if */
-              if (err) {
-                return handleDBErr(err, connection, callback)
-              }
-
-              connection.release()
-
-              callback(false, result[0])
-            }
-          )
+          getById(result.insertId, callback)
         }
       )
     })
   })
 }
 
-export const get = (id, callback) => {
+export const getById = (id, callback) => {
   pool.getConnection((err, connection) => {
     /* istanbul ignore if */
     if (err) {
@@ -54,7 +41,7 @@ export const get = (id, callback) => {
     }
 
     connection.query(
-      'SELECT id, email FROM user WHERE id = ?',
+      'SELECT * FROM user WHERE id = ?',
       [id],
       (err, result) => {
         /* istanbul ignore if */
@@ -70,7 +57,7 @@ export const get = (id, callback) => {
   })
 }
 
-export const getUserByEmail = (email, callback) => {
+export const getByEmail = (email, callback) => {
   pool.getConnection((err, connection) => {
     /* istanbul ignore if */
     if (err) {
@@ -78,7 +65,7 @@ export const getUserByEmail = (email, callback) => {
     }
 
     connection.query(
-      'SELECT id, email FROM user WHERE email = ?',
+      'SELECT * FROM user WHERE email = ?',
       [email],
       (err, result) => {
         /* istanbul ignore if */
@@ -116,20 +103,7 @@ export const put = (id, email, password, callback) => {
             return handleDBErr(err, connection, callback)
           }
 
-          connection.query(
-            'SELECT id, email FROM user WHERE id = ?',
-            [id],
-            (err, result) => {
-              /* istanbul ignore if */
-              if (err) {
-                return handleDBErr(err, connection, callback)
-              }
-
-              connection.release()
-
-              callback(false, result[0])
-            }
-          )
+          getById(id, callback)
         }
       )
     })
@@ -144,7 +118,7 @@ export const remove = (id, callback) => {
     }
 
     connection.query(
-      'SELECT id FROM user WHERE id = ?',
+      'DELETE FROM user WHERE id = ?',
       [id],
       (err, result) => {
         /* istanbul ignore if */
@@ -152,20 +126,9 @@ export const remove = (id, callback) => {
           return handleDBErr(err, connection, callback)
         }
 
-        connection.query(
-          'DELETE FROM user WHERE id = ?',
-          [id],
-          (err, result) => {
-            /* istanbul ignore if */
-            if (err) {
-              return handleDBErr(err, connection, callback)
-            }
+        connection.release()
 
-            connection.release()
-
-            callback(false)
-          }
-        )
+        callback(false)
       }
     )
   })
