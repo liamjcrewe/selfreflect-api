@@ -47,7 +47,7 @@ describe('Tokens endpoint', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('doesn\'t create an access token for an inavlid email', done => {
+  it('doesn\'t create an access token for an invalid email', done => {
     const test = id => {
       request.post('/tokens')
         .send({
