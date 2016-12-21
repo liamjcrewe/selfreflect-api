@@ -87,7 +87,6 @@ describe('Tokens endpoint', () => {
             })
           })
       })
-
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
