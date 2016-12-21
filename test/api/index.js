@@ -142,7 +142,6 @@ describe('Index and overall app', () => {
           .set('Authorization', 'Bearer ' + token)
           .expect(404)
           .end((_, res) => {
-            console.log(res)
             expect(res.body.error).to.eql('Requested URL not found')
 
             done()
