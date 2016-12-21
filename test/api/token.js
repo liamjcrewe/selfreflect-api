@@ -30,12 +30,12 @@ describe('Tokens endpoint', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('should not create an access token for an invalid password', done => {
+  it('should not create an access token for an invalid email', done => {
     const test = id => {
       request.post('/tokens')
         .send({
-          email: testEmail,
-          password: 'invalid'
+          email: 'invalid',
+          password: 'password'
         })
         .expect(401)
         .end((_, res) => {
@@ -47,12 +47,12 @@ describe('Tokens endpoint', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('should not create an access token for an invalid email', done => {
+  it('should not create an access token for an invalid password', done => {
     const test = id => {
       request.post('/tokens')
         .send({
-          email: 'invalid',
-          password: 'password'
+          email: testEmail,
+          password: 'invalid'
         })
         .expect(401)
         .end((_, res) => {
