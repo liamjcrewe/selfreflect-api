@@ -1,8 +1,12 @@
 import { runOnEmptyDB, insertUser } from '../helper/db.js'
+import jwt from 'jsonwebtoken'
+import { secret } from '../../config/auth'
 
 const testEmail = 'test@test.com'
 // hash for password 'password'
 const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzWgS'
+// 5 minute expiry
+const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 
 describe('Users endpoint', () => {
   it('should create and return a user', done => {
@@ -72,47 +76,59 @@ describe('Users endpoint', () => {
   }),
   it('should retrieve a user when given a valid id', done => {
     const test = id => {
-      request.get('/users/' + id)
-        .expect(200)
-        .end((_, res) => {
-          expect(res.body).to.eql({
-            id: id,
-            email: testEmail
-          })
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.get('/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .expect(200)
+          .end((_, res) => {
+            expect(res.body).to.eql({
+              id: id,
+              email: testEmail
+            })
 
-          done()
-        })
+            done()
+          })
+      })
     }
 
     // empty db, which calls insert user, which calls test with insert id
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should report an error for invalid user id', done => {
-    request.get('/users/' + 0)
-      .expect(404)
-      .end((_, res) => {
-        expect(res.body.error).to.eql('Invalid user id')
+    jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
+      request.get('/users/' + 0)
+        .set('Authorization', 'Bearer ' + token)
+        .expect(404)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('Invalid user id')
 
-        done()
-      })
+          done()
+        })
+    })
   }),
   it('should report an error for invalid user id type', done => {
-    request.get('/users/invalid')
-      .expect(404)
-      .end((_, res) => {
-        expect(res.body.error).to.eql('Invalid user id')
+    jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
+      request.get('/users/invalid')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(404)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('Invalid user id')
 
-        done()
-      })
+          done()
+        })
+    })
   }),
   it('should return 404 for id of user that does not exist', done => {
-    request.get('/users/9999')
-      .expect(404)
-      .end((_, res) => {
-        expect(res.body.error).to.eql('No user found with this id')
+    jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
+      request.get('/users/9999')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(404)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('No user found with this id')
 
-        done()
-      })
+          done()
+        })
+    })
   }),
   it('should update a user\'s email', done => {
     const updatedUser = {
@@ -121,17 +137,20 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      request.put('/users/' + id)
-        .send(updatedUser)
-        .expect(200)
-        .end((_, res) => {
-          expect(res.body).to.eql({
-            id: id,
-            email: updatedUser.email
-          })
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .expect(200)
+          .end((_, res) => {
+            expect(res.body).to.eql({
+              id: id,
+              email: updatedUser.email
+            })
 
-          done()
-        })
+            done()
+          })
+      })
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
@@ -143,17 +162,20 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      request.put('/users/' + id)
-        .send(updatedUser)
-        .expect(200)
-        .end((_, res) => {
-          expect(res.body).to.eql({
-            id: id,
-            email: testEmail
-          })
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .expect(200)
+          .end((_, res) => {
+            expect(res.body).to.eql({
+              id: id,
+              email: testEmail
+            })
 
-          done()
-        })
+            done()
+          })
+      })
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
@@ -164,16 +186,19 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      request.put('/users/' + id)
-        .send(updatedUser)
-        .expect(400)
-        .end((_, res) => {
-          expect(res.body.error).to.eql(
-            'Missing email or password field(s)'
-          )
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .expect(400)
+          .end((_, res) => {
+            expect(res.body.error).to.eql(
+              'Missing email or password field(s)'
+            )
 
-          done()
-        })
+            done()
+          })
+      })
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
@@ -184,16 +209,19 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      request.put('/users/' + id)
-        .send(updatedUser)
-        .expect(400)
-        .end((_, res) => {
-          expect(res.body.error).to.eql(
-            'Missing email or password field(s)'
-          )
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .expect(400)
+          .end((_, res) => {
+            expect(res.body.error).to.eql(
+              'Missing email or password field(s)'
+            )
 
-          done()
-        })
+            done()
+          })
+      })
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
@@ -205,55 +233,68 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      request.put('/users/' + 0)
-        .send(updatedUser)
-        .expect(404)
-        .end((_, res) => {
-          expect(res.body.error).to.eql(
-            'Missing id'
-          )
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/users/' + 0)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .expect(404)
+          .end((_, res) => {
+            expect(res.body.error).to.eql(
+              'Missing id'
+            )
 
-          done()
-        })
+            done()
+          })
+      })
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should delete a user', done => {
     const test = id => {
-      request.delete('/users/' + id)
-        .expect(200)
-        .end((_, res) => {
-          expect(res.body.message).to.eql('User deleted')
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.delete('/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .expect(200)
+          .end((_, res) => {
+            expect(res.body.message).to.eql('User deleted')
 
-          request.get('/users/' + id)
-            .expect(404)
-            .end((_, res) => {
-              expect(res.body.error).to.eql('No user found with this id')
+            request.get('/users/' + id)
+              .set('Authorization', 'Bearer ' + token)
+              .expect(404)
+              .end((_, res) => {
+                expect(res.body.error).to.eql('No user found with this id')
 
-              done()
-            })
-        })
+                done()
+              })
+          })
+      })
     }
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should reject deletion of user with invalid id', done => {
-    request.delete('/users/invalid')
-      .expect(404)
-      .end((_, res) => {
-        expect(res.body.error).to.eql('Missing id')
+    jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
+      request.delete('/users/invalid')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(404)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('Missing id')
 
-        done()
-      })
+          done()
+        })
+    })
   }),
   it('should reject deletion of user that does not exist', done => {
-    request.delete('/users/9999')
-      .expect(404)
-      .end((_, res) => {
-        expect(res.body.error).to.eql('No user found with this id')
+    jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
+      request.delete('/users/9999')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(404)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('No user found with this id')
 
-        done()
-      })
+          done()
+        })
+    })
   })
 })
