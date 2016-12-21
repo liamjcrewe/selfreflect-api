@@ -68,7 +68,7 @@ describe('Index and overall app', () => {
         })
     })
   }),
-  it('rejects requests that require auth without an access token', done => {
+  it('should reject request that requires auth, without an access token', done => {
     const test = id => {
       request.get('/users/' + id)
         .expect(401)
@@ -81,7 +81,7 @@ describe('Index and overall app', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('does not allow a user to get a different user', done => {
+  it('should not allow a user to get a different user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/users/' + (id + 1))
@@ -97,7 +97,7 @@ describe('Index and overall app', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('does not allow a user to put a different user', done => {
+  it('should not allow a user to put a different user', done => {
     const updatedUser = {
       email: 'test2@test.com', // change
       password: 'password' // no change
@@ -119,7 +119,7 @@ describe('Index and overall app', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('does not allow a user to delete a different user', done => {
+  it('should not allow a user to delete a different user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.delete('/users/' + (id + 1))
@@ -135,7 +135,7 @@ describe('Index and overall app', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('handles unknown routes via 404', done => {
+  it('should handle unknown routes via 404', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/some/unknown/route')
