@@ -18,7 +18,7 @@ export const create = (email, password, callback) => {
       }
 
       connection.query(
-        'INSERT INTO user(email, password) VALUES (?, ?)',
+        'INSERT INTO user (email, password) VALUES (?, ?)',
         [email, hash],
         (err, result) => {
           /* istanbul ignore if */
