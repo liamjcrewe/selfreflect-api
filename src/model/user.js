@@ -117,19 +117,37 @@ export const remove = (id, callback) => {
       return handleDBErr(err, connection, callback)
     }
 
-    connection.query(
-      'DELETE FROM user WHERE id = ?',
-      [id],
-      (err, result) => {
-        /* istanbul ignore if */
-        if (err) {
-          return handleDBErr(err, connection, callback)
-        }
-
-        connection.release()
-
-        callback(false)
+    getById(id, (err, user) => {
+      /* istanbul ignore if */
+      if (err) {
+        return handleDBErr(err, connection, callback)
       }
-    )
+
+      connection.query(
+        'INSERT INTO user_archive (id, email, password) VALUES (?, ?, ?)',
+        [id, user.email, user.password],
+        (err, result) => {
+          /* istanbul ignore if */
+          if (err) {
+            return handleDBErr(err, connection, callback)
+          }
+
+          connection.query(
+            'DELETE FROM user WHERE id = ?',
+            [id],
+            (err, result) => {
+              /* istanbul ignore if */
+              if (err) {
+                return handleDBErr(err, connection, callback)
+              }
+
+              connection.release()
+
+              callback(false)
+            }
+          )
+        }
+      )
+    })
   })
 }
