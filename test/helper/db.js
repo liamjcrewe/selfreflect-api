@@ -1,15 +1,18 @@
 import pool from '../../build/db'
+import { compose } from 'ramda'
+
+const truncateTable = (connection, table) => () => {
+  connection.query("TRUNCATE TABLE " + table)
+}
 
 export const runOnEmptyDB = callback => {
   pool.getConnection((err, connection) => {
-    connection.query(
-      "TRUNCATE TABLE user;",
-      (err, result) => {
-        connection.release()
-
-        callback()
-      }
-    )
+    compose(
+      callback,
+      connection.release,
+      truncateTable(connection, 'user_archive'),
+      truncateTable(connection, 'user')
+    )()
   })
 }
 
