@@ -101,7 +101,7 @@ app.delete('/v1/users/:id', (req, res) => {
   removeUser(id, res)
 })
 
-app.get('/v1/users/:id/wellbeing', (req, res) => {
+app.get('/v1/users/:id/wellbeings', (req, res) => {
   const id = parseInt(req.params.id, 10)
 
   if (!isValidId(id)) {
@@ -122,7 +122,7 @@ app.get('/v1/users/:id/wellbeing', (req, res) => {
   getWellbeing(id, limit, res)
 })
 
-app.post('/v1/users/:id/wellbeing', (req, res) => {
+app.post('/v1/users/:id/wellbeings', (req, res) => {
   const id = parseInt(req.params.id, 10)
 
   if (!isValidId(id)) {
