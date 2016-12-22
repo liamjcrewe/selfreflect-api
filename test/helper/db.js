@@ -43,25 +43,8 @@ export const insertUser = (email, hash, callback) => {
   })
 }
 
-export const insert10Wellbeings = (id, wellbeings, callback) => {
-  if (wellbeings.length !== 10) {
-    return callback(id)
-  }
-
+export const insertWellbeings = (id, values, callback) => {
   pool.getConnection((_, connection) => {
-    const values = [
-      [id, wellbeings[0]],
-      [id, wellbeings[1]],
-      [id, wellbeings[2]],
-      [id, wellbeings[3]],
-      [id, wellbeings[4]],
-      [id, wellbeings[5]],
-      [id, wellbeings[6]],
-      [id, wellbeings[7]],
-      [id, wellbeings[8]],
-      [id, wellbeings[9]]
-    ]
-
     connection.query(
       'INSERT INTO wellbeing (user_id, wellbeing) VALUES ?',
       [values],

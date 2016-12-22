@@ -1,4 +1,4 @@
-import { runOnEmptyDB, insertUser, insert10Wellbeings } from '../helper/db.js'
+import { runOnEmptyDB, insertUser, insertWellbeings } from '../helper/db.js'
 import { secret } from '../../config/auth'
 import jwt from 'jsonwebtoken'
 
@@ -8,7 +8,20 @@ const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzW
 // 5 minute expiry
 const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 
-const wellbeings = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+const wellbeings = id => {
+  return [
+    [id, 1],
+    [id, 2],
+    [id, 3],
+    [id, 4],
+    [id, 5],
+    [id, 6],
+    [id, 7],
+    [id, 8],
+    [id, 9],
+    [id, 10]
+  ]
+}
 
 describe('Wellbeing endpoint', () => {
   it('should get a user\s last 5 wellbeings with limit specified', done => {
@@ -36,7 +49,7 @@ describe('Wellbeing endpoint', () => {
       // Insert a user
       () => insertUser(testEmail, passwordHash,
         // Pass user id, insert some wellbeing scores, then run test
-        id => insert10Wellbeings(id, wellbeings, test)
+        id => insertWellbeings(id, wellbeings(id), test)
       )
     )
   }),
@@ -65,7 +78,7 @@ describe('Wellbeing endpoint', () => {
       // Insert a user
       () => insertUser(testEmail, passwordHash,
         // Pass user id, insert some wellbeing scores, then run test
-        id => insert10Wellbeings(id, wellbeings, test)
+        id => insertWellbeings(id, wellbeings(id), test)
       )
     )
   }),
@@ -94,7 +107,7 @@ describe('Wellbeing endpoint', () => {
       // Insert a user
       () => insertUser(testEmail, passwordHash,
         // Pass user id, insert some wellbeing scores, then run test
-        id => insert10Wellbeings(id, wellbeings, test)
+        id => insertWellbeings(id, wellbeings(id), test)
       )
     )
   }),
@@ -123,7 +136,7 @@ describe('Wellbeing endpoint', () => {
       // Insert a user
       () => insertUser(testEmail, passwordHash,
         // Pass user id, insert some wellbeing scores, then run test
-        id => insert10Wellbeings(id, wellbeings, test)
+        id => insertWellbeings(id, wellbeings(id), test)
       )
     )
   }),
@@ -157,7 +170,7 @@ describe('Wellbeing endpoint', () => {
       // Insert a user
       () => insertUser(testEmail, passwordHash,
         // Pass user id, insert some wellbeing scores, then run test
-        id => insert10Wellbeings(id, wellbeings, test)
+        id => insertWellbeings(id, wellbeings(id), test)
       )
     )
   })
