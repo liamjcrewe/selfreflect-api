@@ -32,8 +32,8 @@ const jwtMiddleware = jwt({
 // Apply to all paths except "/users" and "POST /tokens"
 app.use(jwtMiddleware.unless({
   path: [
-    '/users',
-    { url: '/tokens', methods: ['POST'] }
+    '/v1/users',
+    { url: '/v1/tokens', methods: ['POST'] }
   ]
 }))
 
@@ -50,11 +50,11 @@ const isValidId = id => {
   return Number.isInteger(id) && (id > 0)
 }
 
-app.post('/users', (req, res) => {
+app.post('/v1/users', (req, res) => {
   createUser(req.body, res)
 })
 
-app.get('/users/:id', (req, res) => {
+app.get('/v1/users/:id', (req, res) => {
   const id = parseInt(req.params.id, 10)
 
   if (!isValidId(id)) {
@@ -68,7 +68,7 @@ app.get('/users/:id', (req, res) => {
   getUser(id, res)
 })
 
-app.put('/users/:id', (req, res) => {
+app.put('/v1/users/:id', (req, res) => {
   const id = parseInt(req.params.id, 10)
 
   if (!isValidId(id)) {
@@ -82,7 +82,7 @@ app.put('/users/:id', (req, res) => {
   putUser(id, req.body, res)
 })
 
-app.delete('/users/:id', (req, res) => {
+app.delete('/v1/users/:id', (req, res) => {
   const id = parseInt(req.params.id, 10)
 
   if (!isValidId(id)) {
@@ -96,7 +96,7 @@ app.delete('/users/:id', (req, res) => {
   removeUser(id, res)
 })
 
-app.get('/users/:id/wellbeing', (req, res) => {
+app.get('/v1/users/:id/wellbeing', (req, res) => {
   const id = parseInt(req.params.id, 10)
   if (req.token.id !== id) {
     return res.status(403).json({ error: 'Forbidden' })
@@ -105,7 +105,7 @@ app.get('/users/:id/wellbeing', (req, res) => {
   res.json({ message: 'Get user wellbeing data' })
 })
 
-app.post('/users/:id/wellbeing', (req, res) => {
+app.post('/v1/users/:id/wellbeing', (req, res) => {
   const id = parseInt(req.params.id, 10)
   if (req.token.id !== id) {
     return res.status(403).json({ error: 'Forbidden' })
@@ -114,15 +114,15 @@ app.post('/users/:id/wellbeing', (req, res) => {
   res.json({ message: 'Post user wellbeing data' })
 })
 
-app.post('/users/recoverpassword', (req, res) => {
+app.post('/v1/users/recoverpassword', (req, res) => {
   res.json({ message: 'Password recovery' })
 })
 
-app.post('/tokens', (req, res) => {
+app.post('/v1/tokens', (req, res) => {
   createToken(req.body, res)
 })
 
-app.put('/tokens', (req, res) => {
+app.put('/v1/tokens', (req, res) => {
   refreshToken(req.token, res)
 })
 

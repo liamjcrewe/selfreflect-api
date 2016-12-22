@@ -11,7 +11,7 @@ const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 describe('Users endpoint', () => {
   it('should create and return a user', done => {
     const test = () => {
-      request.post('/users')
+      request.post('/v1/users')
       .send({
         email: testEmail,
         password: 'testpassword'
@@ -22,7 +22,7 @@ describe('Users endpoint', () => {
 
         const id = res.body.id
 
-        expect(res.headers.location).to.eql('/users/' + id)
+        expect(res.headers.location).to.eql('/v1/users/' + id)
 
         done()
       })
@@ -37,7 +37,7 @@ describe('Users endpoint', () => {
     }
 
     const test = id => {
-      request.post('/users')
+      request.post('/v1/users')
         .send(user)
         .expect(409)
         .end((_, res) => {
@@ -51,7 +51,7 @@ describe('Users endpoint', () => {
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should not create a user if no email given', done => {
-    request.post('/users')
+    request.post('/v1/users')
     .send({
       password: 'testpassword'
     })
@@ -63,7 +63,7 @@ describe('Users endpoint', () => {
     })
   }),
   it('should not create a user if no password given', done => {
-    request.post('/users')
+    request.post('/v1/users')
       .send({
         email: testEmail
       })
@@ -77,7 +77,7 @@ describe('Users endpoint', () => {
   it('should retrieve a user when given a valid id', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.get('/users/' + id)
+        request.get('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .expect(200)
           .end((_, res) => {
@@ -95,7 +95,7 @@ describe('Users endpoint', () => {
   })
   it('should return 404 for id of user that does not exist', done => {
     jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
-      request.get('/users/9999')
+      request.get('/v1/users/9999')
         .set('Authorization', 'Bearer ' + token)
         .expect(404)
         .end((_, res) => {
@@ -113,7 +113,7 @@ describe('Users endpoint', () => {
 
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + id)
+        request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(200)
@@ -138,7 +138,7 @@ describe('Users endpoint', () => {
 
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + id)
+        request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(200)
@@ -162,7 +162,7 @@ describe('Users endpoint', () => {
 
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + id)
+        request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(400)
@@ -185,7 +185,7 @@ describe('Users endpoint', () => {
 
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + id)
+        request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(400)
@@ -204,13 +204,13 @@ describe('Users endpoint', () => {
   it('should delete a user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.delete('/users/' + id)
+        request.delete('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .expect(200)
           .end((_, res) => {
             expect(res.body.message).to.eql('User deleted')
 
-            request.get('/users/' + id)
+            request.get('/v1/users/' + id)
               .set('Authorization', 'Bearer ' + token)
               .expect(404)
               .end((_, res) => {
@@ -226,7 +226,7 @@ describe('Users endpoint', () => {
   }),
   it('should reject deletion of user that does not exist', done => {
     jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
-      request.delete('/users/9999')
+      request.delete('/v1/users/9999')
         .set('Authorization', 'Bearer ' + token)
         .expect(404)
         .end((_, res) => {
