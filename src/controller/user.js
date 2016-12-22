@@ -111,7 +111,7 @@ export const remove = (id, res) => {
       return
     }
 
-    removeUser(id, err => {
+    removeUser(user, err => {
       /* istanbul ignore if */
       if (err) {
         res.status(500).json({ error: 'DB error' })
