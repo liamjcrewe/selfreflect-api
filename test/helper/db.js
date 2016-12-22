@@ -1,27 +1,40 @@
 import pool from '../../build/db'
-import { compose } from 'ramda'
+import Q from 'q'
 
-const truncateTable = (connection, table) => () => {
-  connection.query("TRUNCATE TABLE " + table)
+const setForiegnKeyConstraints = (connection, flag) => {
+  var defer = Q.defer()
+
+  connection.query('SET FOREIGN_KEY_CHECKS = ?', flag, defer.makeNodeResolver())
+}
+
+const truncateTable = (connection, table) => {
+  var defer = Q.defer()
+
+  connection.query('TRUNCATE TABLE ??', table, defer.makeNodeResolver())
 }
 
 export const runOnEmptyDB = callback => {
-  pool.getConnection((err, connection) => {
-    compose(
-      callback,
-      connection.release,
+  pool.getConnection((_, connection) => {
+    Q.all([
+      setForiegnKeyConstraints(connection, 0),
+      truncateTable(connection, 'user'),
       truncateTable(connection, 'user_archive'),
-      truncateTable(connection, 'user')
-    )()
+      truncateTable(connection, 'wellbeing'),
+      setForiegnKeyConstraints(connection, 1)
+    ]).then(() => {
+      connection.release()
+
+      callback()
+    })
   })
 }
 
 export const insertUser = (email, hash, callback) => {
-  pool.getConnection((err, connection) => {
+  pool.getConnection((_, connection) => {
     connection.query(
-      "INSERT INTO user(email, password) VALUES (?, ?)",
+      'INSERT INTO user (email, password) VALUES (?, ?)',
       [email, hash],
-      (err, result) => {
+      (_, result) => {
         connection.release()
 
         callback(result.insertId)
