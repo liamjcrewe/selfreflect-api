@@ -20,9 +20,7 @@ describe('Users endpoint', () => {
       .end((_, res) => {
         expect(res.body.email).to.eql(testEmail)
 
-        const id = res.body.id
-
-        expect(res.headers.location).to.eql('/v1/users/' + id)
+        expect(res.headers.location).to.eql('/v1/users/' + res.body.id)
 
         done()
       })
