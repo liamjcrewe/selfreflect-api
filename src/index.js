@@ -14,6 +14,11 @@ import {
   refresh as refreshToken
 } from './controller/token'
 
+import {
+  post as postWellbeing,
+  get as getWellbeing
+} from './controller/wellbeing'
+
 import { secret } from '../config/auth'
 
 /* Base Setup and Middleware*/
@@ -98,15 +103,32 @@ app.delete('/v1/users/:id', (req, res) => {
 
 app.get('/v1/users/:id/wellbeing', (req, res) => {
   const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
   if (req.token.id !== id) {
     return res.status(403).json({ error: 'Forbidden' })
   }
 
-  res.json({ message: 'Get user wellbeing data' })
+  let limit = parseInt(req.query.limit, 10)
+
+  // If none given , or above maximum allowed (50 for now)
+  if (!limit || limit > 50) {
+    limit = 5
+  }
+
+  getWellbeing(id, limit, res)
 })
 
 app.post('/v1/users/:id/wellbeing', (req, res) => {
   const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
   if (req.token.id !== id) {
     return res.status(403).json({ error: 'Forbidden' })
   }
