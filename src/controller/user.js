@@ -43,7 +43,7 @@ export const create = (body, res) => {
       delete user.password
 
       res.status(201).set({
-        'Location': '/users/' + user.id
+        'Location': '/v1/users/' + user.id
       }).json(user)
     })
   })

@@ -11,7 +11,7 @@ const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 describe('Index and overall app', () => {
   it('should reject get with invalid user id', done => {
     jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
-      request.get('/users/' + 0)
+      request.get('/v1/users/' + 0)
         .set('Authorization', 'Bearer ' + token)
         .expect(404)
         .end((_, res) => {
@@ -29,7 +29,7 @@ describe('Index and overall app', () => {
 
     const test = id => {
       jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + 0)
+        request.put('/v1/users/' + 0)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(404)
@@ -46,7 +46,7 @@ describe('Index and overall app', () => {
   }),
   it('should reject delete with invalid user id', done => {
     jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
-      request.delete('/users/invalid')
+      request.delete('/v1/users/invalid')
         .set('Authorization', 'Bearer ' + token)
         .expect(404)
         .end((_, res) => {
@@ -58,7 +58,7 @@ describe('Index and overall app', () => {
   }),
   it('should report an error for invalid user id type', done => {
     jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
-      request.get('/users/invalid')
+      request.get('/v1/users/invalid')
         .set('Authorization', 'Bearer ' + token)
         .expect(404)
         .end((_, res) => {
@@ -70,7 +70,7 @@ describe('Index and overall app', () => {
   }),
   it('should reject request that requires auth, without an access token', done => {
     const test = id => {
-      request.get('/users/' + id)
+      request.get('/v1/users/' + id)
         .expect(401)
         .end((_, res) => {
           expect(res.body.error).to.eql('Unauthorized')
@@ -84,7 +84,7 @@ describe('Index and overall app', () => {
   it('should not allow a user to get a different user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.get('/users/' + (id + 1))
+        request.get('/v1/users/' + (id + 1))
           .set('Authorization', 'Bearer ' + token)
           .expect(403)
           .end((_, res) => {
@@ -105,7 +105,7 @@ describe('Index and overall app', () => {
 
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/users/' + (id + 1))
+        request.put('/v1/users/' + (id + 1))
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
           .expect(403)
@@ -122,7 +122,7 @@ describe('Index and overall app', () => {
   it('should not allow a user to delete a different user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.delete('/users/' + (id + 1))
+        request.delete('/v1/users/' + (id + 1))
           .set('Authorization', 'Bearer ' + token)
           .expect(403)
           .end((_, res) => {
@@ -138,7 +138,7 @@ describe('Index and overall app', () => {
   it('should handle unknown routes via 404', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.get('/some/unknown/route')
+        request.get('/v1/some/unknown/route')
           .set('Authorization', 'Bearer ' + token)
           .expect(404)
           .end((_, res) => {

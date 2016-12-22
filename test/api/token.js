@@ -9,7 +9,7 @@ const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzW
 describe('Tokens endpoint', () => {
   it('should create an access token', done => {
     const test = id => {
-      request.post('/tokens')
+      request.post('/v1/tokens')
         .send({
           email: testEmail,
           password: 'password'
@@ -32,7 +32,7 @@ describe('Tokens endpoint', () => {
   }),
   it('should not create an access token for an invalid email', done => {
     const test = id => {
-      request.post('/tokens')
+      request.post('/v1/tokens')
         .send({
           email: 'invalid',
           password: 'password'
@@ -49,7 +49,7 @@ describe('Tokens endpoint', () => {
   }),
   it('should not create an access token for an invalid password', done => {
     const test = id => {
-      request.post('/tokens')
+      request.post('/v1/tokens')
         .send({
           email: testEmail,
           password: 'invalid'
@@ -70,7 +70,7 @@ describe('Tokens endpoint', () => {
       const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/tokens')
+        request.put('/v1/tokens')
           .set('Authorization', 'Bearer ' + token)
           .expect(200)
           .end((_, res) => {
