@@ -81,6 +81,20 @@ describe('Index and overall app', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
+  it('should reject request that requires auth, with an invalid token', done => {
+    const test = id => {
+      request.get('/v1/users/' + id)
+        .set('Authorization', 'Bearer InvalidToken')
+        .expect(401)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('Unauthorized')
+
+          done()
+        })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
   it('should not allow a user to get a different user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
