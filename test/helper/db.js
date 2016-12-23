@@ -18,7 +18,6 @@ export const runOnEmptyDB = callback => {
     Q.all([
       setForiegnKeyConstraints(connection, 0),
       truncateTable(connection, 'user'),
-      truncateTable(connection, 'user_archive'),
       truncateTable(connection, 'wellbeing'),
       setForiegnKeyConstraints(connection, 1)
     ]).then(() => {
