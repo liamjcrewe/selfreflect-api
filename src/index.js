@@ -15,7 +15,7 @@ import {
 } from './controller/token'
 
 import {
-  post as postWellbeing,
+  create as createWellbeing,
   get as getWellbeing
 } from './controller/wellbeing'
 
@@ -101,6 +101,20 @@ app.delete('/v1/users/:id', (req, res) => {
   removeUser(id, res)
 })
 
+app.post('/v1/users/:id/wellbeings', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  createWellbeing(id, req.body.wellbeing, res)
+})
+
 app.get('/v1/users/:id/wellbeings', (req, res) => {
   const id = parseInt(req.params.id, 10)
 
@@ -120,20 +134,6 @@ app.get('/v1/users/:id/wellbeings', (req, res) => {
   }
 
   getWellbeing(id, limit, res)
-})
-
-app.post('/v1/users/:id/wellbeings', (req, res) => {
-  const id = parseInt(req.params.id, 10)
-
-  if (!isValidId(id)) {
-    return res.status(404).json({ error: 'Invalid user id' })
-  }
-
-  if (req.token.id !== id) {
-    return res.status(403).json({ error: 'Forbidden' })
-  }
-
-  res.json({ message: 'Post user wellbeing data' })
 })
 
 app.post('/v1/users/recoverpassword', (req, res) => {

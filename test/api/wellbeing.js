@@ -173,5 +173,76 @@ describe('Wellbeing endpoint', () => {
         id => insertWellbeings(id, wellbeings(id), test)
       )
     )
+  }),
+  it('should post a user\s wellbeing', done => {
+    const test = id => {
+      const postData = {
+        wellbeing: 20
+      }
+
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.post('/v1/users/' + id + '/wellbeings')
+          .set('Authorization', 'Bearer ' + token)
+          .send(postData)
+          .expect(201)
+          .end((_, res) => {
+            expect(res.headers.location).to.eql(
+              '/v1/users/' + res.body.id + '/wellbeings?limit=1'
+            )
+
+            expect(res.body.user_id).to.eql(id)
+            expect(res.body.wellbeing).to.eql(postData.wellbeing)
+
+            const time = new Date(res.body.date_recorded).getTime() / 1000
+            const now = new Date().getTime() / 1000
+
+            expect(time).to.be.of.at.most(now)
+
+            done()
+          })
+      })
+    }
+
+    // Empty db
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
+  it('should reject posting a user\s wellbeing without wellbeing data', done => {
+    const test = id => {
+      const postData = {}
+
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.post('/v1/users/' + id + '/wellbeings')
+          .set('Authorization', 'Bearer ' + token)
+          .send(postData)
+          .expect(400)
+          .end((_, res) => {
+            expect(res.body.error).to.eql('Missing id or wellbeing field(s)')
+
+            done()
+          })
+      })
+    }
+
+    // Empty db
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
+  it('should reject posting a user\s wellbeing with id of non existent user', done => {
+    const id = 9999
+
+    const postData = {
+      wellbeing: 20
+    }
+
+    jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+      request.post('/v1/users/' + id + '/wellbeings')
+        .set('Authorization', 'Bearer ' + token)
+        .send(postData)
+        .expect(409)
+        .end((_, res) => {
+          expect(res.body.error).to.eql('No user found with this id')
+
+          done()
+        })
+    })
   })
 })
