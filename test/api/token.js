@@ -14,8 +14,9 @@ describe('Tokens endpoint', () => {
           email: testEmail,
           password: 'password'
         })
-        .expect(200)
         .end((_, res) => {
+          expect(res.status).to.eql(200)
+
           expect(res.body.id).to.eql(id)
 
           jwt.verify(res.body.token, secret, (_, decoded) => {
@@ -31,21 +32,18 @@ describe('Tokens endpoint', () => {
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should not create an access token for an invalid email', done => {
-    const test = id => {
-      request.post('/v1/tokens')
-        .send({
-          email: 'invalid',
-          password: 'password'
-        })
-        .expect(401)
-        .end((_, res) => {
-          expect(res.body.message).to.eql('Invalid email or password')
+    request.post('/v1/tokens')
+      .send({
+        email: 'invalid',
+        password: 'password'
+      })
+      .end((_, res) => {
+        expect(res.status).to.eql(401)
 
-          done()
-        })
-    }
+        expect(res.body.message).to.eql('Invalid email or password')
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+        done()
+      })
   }),
   it('should not create an access token for an invalid password', done => {
     const test = id => {
@@ -54,8 +52,9 @@ describe('Tokens endpoint', () => {
           email: testEmail,
           password: 'invalid'
         })
-        .expect(401)
         .end((_, res) => {
+          expect(res.status).to.eql(401)
+
           expect(res.body.message).to.eql('Invalid email or password')
 
           done()
@@ -65,30 +64,30 @@ describe('Tokens endpoint', () => {
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
   it('should refresh a valid access token', done => {
-    const test = id => {
-      // 5 minute expiry
-      const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
+    // 5 minute expiry
+    const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 
-      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.put('/v1/tokens')
-          .set('Authorization', 'Bearer ' + token)
-          .expect(200)
-          .end((_, res) => {
-            expect(res.body.id).to.eql(id)
+    // Can just use id 1, as id does not have to be valid to just refresh token
+    const id = 1
 
-            jwt.verify(res.body.token, secret, (_, decoded) => {
-              expect(decoded.id).to.eql(id)
+    jwt.sign({ id: 1, exp: expiry }, secret, {}, (_, token) => {
+      request.put('/v1/tokens')
+        .set('Authorization', 'Bearer ' + token)
+        .end((_, res) => {
+          expect(res.status).to.eql(200)
 
-              expect(decoded.exp).to.be.a('number')
+          expect(res.body.id).to.eql(id)
 
-              expect(decoded.exp).to.be.above(expiry)
+          jwt.verify(res.body.token, secret, (_, decoded) => {
+            expect(decoded.id).to.eql(id)
 
-              done()
-            })
+            expect(decoded.exp).to.be.a('number')
+
+            expect(decoded.exp).to.be.above(expiry)
+
+            done()
           })
-      })
-    }
-
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+        })
+    })
   })
 })
