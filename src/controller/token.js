@@ -13,9 +13,7 @@ const generateToken = (id, expiry, res) => {
   jwt.sign({ id: id, exp: expiry }, secret, {}, (err, token) => {
     /* istanbul ignore if */
     if (err) {
-      res.status(500).json({ error: 'An error occurred' })
-
-      return
+      return res.status(500).json({ error: 'An error occurred' })
     }
 
     res.status(200).json({ id: id, token: token })
@@ -29,30 +27,22 @@ export const create = (body, res) => {
   getUserByEmail(email, (err, user) => {
     /* istanbul ignore if */
     if (err) {
-      res.status(500).json({ error: 'DB error' })
-
-      return
+      return res.status(500).json({ error: 'DB error' })
     }
 
     // No user found with this email
     if (!user) {
-      res.status(401).json({ message: 'Invalid email or password' })
-
-      return
+      return res.status(401).json({ message: 'Invalid email or password' })
     }
 
     bcrypt.compare(password, user.password, (err, isMatch) => {
       /* istanbul ignore if */
       if (err) {
-        res.status(500).json({ error: 'An error occurred' })
-
-        return
+        return res.status(500).json({ error: 'An error occurred' })
       }
 
       if (!isMatch) {
-        res.status(401).json({ message: 'Invalid email or password' })
-
-        return
+        return res.status(401).json({ message: 'Invalid email or password' })
       }
 
       // Expire in one day
