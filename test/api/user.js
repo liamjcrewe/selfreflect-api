@@ -112,7 +112,8 @@ describe('Users endpoint', () => {
   it('should update a user\'s email', done => {
     const updatedUser = {
       email: 'test2@test.com', // change
-      password: 'password' // no change
+      oldPassword: 'password',
+      newPassword: 'password' // no change
     }
 
     const test = id => {
@@ -138,7 +139,8 @@ describe('Users endpoint', () => {
   it('should update a user\'s password', done => {
     const updatedUser = {
       email: testEmail, // no change
-      password: 'password2' // change
+      oldPassword: 'password', // change
+      newPassword: 'password2' // change
     }
 
     const test = id => {
@@ -185,9 +187,10 @@ describe('Users endpoint', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
-  it('should reject put with no password', done => {
+  it('should reject put with no new password', done => {
     const updatedUser = {
       email: testEmail,
+      oldPassword: 'password'
     }
 
     const test = id => {
@@ -200,6 +203,57 @@ describe('Users endpoint', () => {
 
             expect(res.body.error).to.eql(
               'Missing email or password field(s)'
+            )
+
+            done()
+          })
+      })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
+  it('should reject put with no old password', done => {
+    const updatedUser = {
+      email: testEmail,
+      newPassword: 'password2'
+    }
+
+    const test = id => {
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/v1/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .end((_, res) => {
+            expect(res.status).to.eql(400)
+
+            expect(res.body.error).to.eql(
+              'Missing email or password field(s)'
+            )
+
+            done()
+          })
+      })
+    }
+
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
+  it('should reject put with wrong old password', done => {
+    const updatedUser = {
+      email: testEmail,
+      oldPassword: 'wrong',
+      newPassword: 'password2'
+    }
+
+    const test = id => {
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/v1/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .end((_, res) => {
+            expect(res.status).to.eql(401)
+
+            expect(res.body.message).to.eql(
+              'Invalid password'
             )
 
             done()

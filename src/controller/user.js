@@ -6,6 +6,8 @@ import {
   remove as removeUser
 } from '../model/user'
 
+import bcrypt from 'bcrypt'
+
 export const create = (body, res) => {
   const email = body.email
   const password = body.password // to be hashed
@@ -73,15 +75,16 @@ export const get = (id, res) => {
 
 export const put = (id, body, res) => {
   const email = body.email
-  const password = body.password // to be hashed
+  const oldPassword = body.oldPassword
+  const newPassword = body.newPassword // to be hashed
 
-  if (!email || !password) {
+  if (!email || !oldPassword || !newPassword) {
     res.status(400).json({ error: 'Missing email or password field(s)' })
 
     return
   }
 
-  putUser(id, email, password, (err, user) => {
+  getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
       res.status(500).json({ error: 'DB error' })
@@ -89,10 +92,34 @@ export const put = (id, body, res) => {
       return
     }
 
-    // Don't want to send password back
-    delete user.password
+    bcrypt.compare(oldPassword, user.password, (err, isMatch) => {
+      /* istanbul ignore if */
+      if (err) {
+        res.status(500).json({ error: 'An error occurred' })
 
-    res.status(200).json(user)
+        return
+      }
+
+      if (!isMatch) {
+        res.status(401).json({ message: 'Invalid password' })
+
+        return
+      }
+
+      putUser(id, email, newPassword, (err, user) => {
+        /* istanbul ignore if */
+        if (err) {
+          res.status(500).json({ error: 'DB error' })
+
+          return
+        }
+
+        // Don't want to send password back
+        delete user.password
+
+        res.status(200).json(user)
+      })
+    })
   })
 }
 
