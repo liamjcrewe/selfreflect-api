@@ -29,8 +29,9 @@ describe('Wellbeing endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=5')
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(10)
@@ -58,8 +59,9 @@ describe('Wellbeing endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings')
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(10)
@@ -87,8 +89,9 @@ describe('Wellbeing endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=invalid')
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(10)
@@ -116,8 +119,9 @@ describe('Wellbeing endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=9999')
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(10)
@@ -145,8 +149,9 @@ describe('Wellbeing endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=10')
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(10)
@@ -184,8 +189,9 @@ describe('Wellbeing endpoint', () => {
         request.post('/v1/users/' + id + '/wellbeings')
           .set('Authorization', 'Bearer ' + token)
           .send(postData)
-          .expect(201)
           .end((_, res) => {
+            expect(res.status).to.eql(201)
+
             expect(res.headers.location).to.eql(
               '/v1/users/' + res.body.id + '/wellbeings?limit=1'
             )
@@ -214,8 +220,9 @@ describe('Wellbeing endpoint', () => {
         request.post('/v1/users/' + id + '/wellbeings')
           .set('Authorization', 'Bearer ' + token)
           .send(postData)
-          .expect(400)
           .end((_, res) => {
+            expect(res.status).to.eql(400)
+
             expect(res.body.error).to.eql('Missing id or wellbeing field(s)')
 
             done()
@@ -237,8 +244,9 @@ describe('Wellbeing endpoint', () => {
       request.post('/v1/users/' + id + '/wellbeings')
         .set('Authorization', 'Bearer ' + token)
         .send(postData)
-        .expect(409)
         .end((_, res) => {
+          expect(res.status).to.eql(409)
+
           expect(res.body.error).to.eql('No user found with this id')
 
           done()

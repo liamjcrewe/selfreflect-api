@@ -14,8 +14,9 @@ describe('Tokens endpoint', () => {
           email: testEmail,
           password: 'password'
         })
-        .expect(200)
         .end((_, res) => {
+          expect(res.status).to.eql(200)
+
           expect(res.body.id).to.eql(id)
 
           jwt.verify(res.body.token, secret, (_, decoded) => {
@@ -36,8 +37,9 @@ describe('Tokens endpoint', () => {
         email: 'invalid',
         password: 'password'
       })
-      .expect(401)
       .end((_, res) => {
+        expect(res.status).to.eql(401)
+
         expect(res.body.message).to.eql('Invalid email or password')
 
         done()
@@ -50,8 +52,9 @@ describe('Tokens endpoint', () => {
           email: testEmail,
           password: 'invalid'
         })
-        .expect(401)
         .end((_, res) => {
+          expect(res.status).to.eql(401)
+
           expect(res.body.message).to.eql('Invalid email or password')
 
           done()
@@ -70,8 +73,9 @@ describe('Tokens endpoint', () => {
     jwt.sign({ id: 1, exp: expiry }, secret, {}, (_, token) => {
       request.put('/v1/tokens')
         .set('Authorization', 'Bearer ' + token)
-        .expect(200)
         .end((_, res) => {
+          expect(res.status).to.eql(200)
+
           expect(res.body.id).to.eql(id)
 
           jwt.verify(res.body.token, secret, (_, decoded) => {

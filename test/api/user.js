@@ -16,8 +16,9 @@ describe('Users endpoint', () => {
         email: testEmail,
         password: 'testpassword'
       })
-      .expect(201)
       .end((_, res) => {
+        expect(res.status).to.eql(201)
+
         expect(res.body.email).to.eql(testEmail)
 
         expect(res.headers.location).to.eql('/v1/users/' + res.body.id)
@@ -37,8 +38,9 @@ describe('Users endpoint', () => {
     const test = id => {
       request.post('/v1/users')
         .send(user)
-        .expect(409)
         .end((_, res) => {
+          expect(res.status).to.eql(409)
+
           expect(res.body.error).to.eql('Email already in use')
 
           done()
@@ -53,8 +55,9 @@ describe('Users endpoint', () => {
     .send({
       password: 'testpassword'
     })
-    .expect(400)
     .end((_, res) => {
+      expect(res.status).to.eql(400)
+
       expect(res.body.error).to.eql('Missing email or password field(s)')
 
       done()
@@ -65,8 +68,9 @@ describe('Users endpoint', () => {
       .send({
         email: testEmail
       })
-      .expect(400)
       .end((_, res) => {
+        expect(res.status).to.eql(400)
+
         expect(res.body.error).to.eql('Missing email or password field(s)')
 
         done()
@@ -77,8 +81,9 @@ describe('Users endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body).to.eql({
               id: id,
               email: testEmail
@@ -95,8 +100,9 @@ describe('Users endpoint', () => {
     jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
       request.get('/v1/users/9999')
         .set('Authorization', 'Bearer ' + token)
-        .expect(404)
         .end((_, res) => {
+          expect(res.status).to.eql(404)
+
           expect(res.body.error).to.eql('No user found with this id')
 
           done()
@@ -114,8 +120,9 @@ describe('Users endpoint', () => {
         request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body).to.eql({
               id: id,
               email: updatedUser.email
@@ -139,8 +146,9 @@ describe('Users endpoint', () => {
         request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body).to.eql({
               id: id,
               email: testEmail
@@ -163,8 +171,9 @@ describe('Users endpoint', () => {
         request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
-          .expect(400)
           .end((_, res) => {
+            expect(res.status).to.eql(400)
+
             expect(res.body.error).to.eql(
               'Missing email or password field(s)'
             )
@@ -186,8 +195,9 @@ describe('Users endpoint', () => {
         request.put('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
           .send(updatedUser)
-          .expect(400)
           .end((_, res) => {
+            expect(res.status).to.eql(400)
+
             expect(res.body.error).to.eql(
               'Missing email or password field(s)'
             )
@@ -204,14 +214,16 @@ describe('Users endpoint', () => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.delete('/v1/users/' + id)
           .set('Authorization', 'Bearer ' + token)
-          .expect(200)
           .end((_, res) => {
+            expect(res.status).to.eql(200)
+
             expect(res.body.message).to.eql('User deleted')
 
             request.get('/v1/users/' + id)
               .set('Authorization', 'Bearer ' + token)
-              .expect(404)
               .end((_, res) => {
+                expect(res.status).to.eql(404)
+
                 expect(res.body.error).to.eql('No user found with this id')
 
                 done()
@@ -226,8 +238,9 @@ describe('Users endpoint', () => {
     jwt.sign({ id: 9999, exp: expiry }, secret, {}, (_, token) => {
       request.delete('/v1/users/9999')
         .set('Authorization', 'Bearer ' + token)
-        .expect(404)
         .end((_, res) => {
+          expect(res.status).to.eql(404)
+
           expect(res.body.error).to.eql('No user found with this id')
 
           done()
