@@ -55,6 +55,10 @@ const isValidId = id => {
   return Number.isInteger(id) && (id > 0)
 }
 
+const isValidWellbeing = wellbeing => {
+  return Number.isInteger(wellbeing) && (wellbeing > 6) && (wellbeing < 36)
+}
+
 app.post('/v1/users', (req, res) => {
   createUser(req.body, res)
 })
@@ -112,7 +116,19 @@ app.post('/v1/users/:id/wellbeings', (req, res) => {
     return res.status(403).json({ error: 'Forbidden' })
   }
 
-  createWellbeing(id, req.body.wellbeing, res)
+  if (!req.body || !req.body.wellbeing) {
+    return res.status(400).json({ error: 'Missing wellbeing field' })
+  }
+
+  const wellbeing = parseInt(req.body.wellbeing, 10)
+
+  if (!isValidWellbeing(wellbeing)) {
+    return res.status(400).json({
+      error: 'Invalid wellbeing value - must be an integer between 7 and 35'
+    })
+  }
+
+  createWellbeing(id, wellbeing, res)
 })
 
 app.get('/v1/users/:id/wellbeings', (req, res) => {
