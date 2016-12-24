@@ -10,17 +10,42 @@ const expiry = Math.floor(Date.now() / 1000) + (60 * 5)
 
 const wellbeings = id => {
   return [
-    [id, 1],
-    [id, 2],
-    [id, 3],
-    [id, 4],
-    [id, 5],
-    [id, 6],
     [id, 7],
     [id, 8],
     [id, 9],
-    [id, 10]
+    [id, 10],
+    [id, 11],
+    [id, 12],
+    [id, 13],
+    [id, 14],
+    [id, 15],
+    [id, 16]
   ]
+}
+
+const mappedWellbeings = raw => {
+  switch (raw) {
+    case 7:
+      return 7
+    case 8:
+      return 9.51
+    case 9:
+      return 11.25
+    case 10:
+      return 12.4
+    case 11:
+      return 13.33
+    case 12:
+      return 14.08
+    case 13:
+      return 14.75
+    case 14:
+      return 15.32
+    case 15:
+      return 15.84
+    case 16:
+      return 16.36
+  }
 }
 
 describe('Wellbeing endpoint', () => {
@@ -34,11 +59,11 @@ describe('Wellbeing endpoint', () => {
 
             expect(res.body.id).to.eql(id)
 
-            expect(res.body.results[0].wellbeing).to.eql(10)
-            expect(res.body.results[1].wellbeing).to.eql(9)
-            expect(res.body.results[2].wellbeing).to.eql(8)
-            expect(res.body.results[3].wellbeing).to.eql(7)
-            expect(res.body.results[4].wellbeing).to.eql(6)
+            expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
+            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
+            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
+            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
+            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -64,11 +89,11 @@ describe('Wellbeing endpoint', () => {
 
             expect(res.body.id).to.eql(id)
 
-            expect(res.body.results[0].wellbeing).to.eql(10)
-            expect(res.body.results[1].wellbeing).to.eql(9)
-            expect(res.body.results[2].wellbeing).to.eql(8)
-            expect(res.body.results[3].wellbeing).to.eql(7)
-            expect(res.body.results[4].wellbeing).to.eql(6)
+            expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
+            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
+            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
+            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
+            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -94,11 +119,11 @@ describe('Wellbeing endpoint', () => {
 
             expect(res.body.id).to.eql(id)
 
-            expect(res.body.results[0].wellbeing).to.eql(10)
-            expect(res.body.results[1].wellbeing).to.eql(9)
-            expect(res.body.results[2].wellbeing).to.eql(8)
-            expect(res.body.results[3].wellbeing).to.eql(7)
-            expect(res.body.results[4].wellbeing).to.eql(6)
+            expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
+            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
+            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
+            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
+            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -124,11 +149,11 @@ describe('Wellbeing endpoint', () => {
 
             expect(res.body.id).to.eql(id)
 
-            expect(res.body.results[0].wellbeing).to.eql(10)
-            expect(res.body.results[1].wellbeing).to.eql(9)
-            expect(res.body.results[2].wellbeing).to.eql(8)
-            expect(res.body.results[3].wellbeing).to.eql(7)
-            expect(res.body.results[4].wellbeing).to.eql(6)
+            expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
+            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
+            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
+            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
+            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -154,16 +179,16 @@ describe('Wellbeing endpoint', () => {
 
             expect(res.body.id).to.eql(id)
 
-            expect(res.body.results[0].wellbeing).to.eql(10)
-            expect(res.body.results[1].wellbeing).to.eql(9)
-            expect(res.body.results[2].wellbeing).to.eql(8)
-            expect(res.body.results[3].wellbeing).to.eql(7)
-            expect(res.body.results[4].wellbeing).to.eql(6)
-            expect(res.body.results[5].wellbeing).to.eql(5)
-            expect(res.body.results[6].wellbeing).to.eql(4)
-            expect(res.body.results[7].wellbeing).to.eql(3)
-            expect(res.body.results[8].wellbeing).to.eql(2)
-            expect(res.body.results[9].wellbeing).to.eql(1)
+            expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
+            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
+            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
+            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
+            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
+            expect(res.body.results[5].wellbeing).to.eql(mappedWellbeings(11))
+            expect(res.body.results[6].wellbeing).to.eql(mappedWellbeings(10))
+            expect(res.body.results[7].wellbeing).to.eql(mappedWellbeings(9))
+            expect(res.body.results[8].wellbeing).to.eql(mappedWellbeings(8))
+            expect(res.body.results[9].wellbeing).to.eql(mappedWellbeings(7))
 
             done()
           })
@@ -182,7 +207,7 @@ describe('Wellbeing endpoint', () => {
   it('should post a user\s wellbeing', done => {
     const test = id => {
       const postData = {
-        wellbeing: 20
+        wellbeing: 12
       }
 
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
@@ -197,7 +222,9 @@ describe('Wellbeing endpoint', () => {
             )
 
             expect(res.body.user_id).to.eql(id)
-            expect(res.body.wellbeing).to.eql(postData.wellbeing)
+            expect(res.body.wellbeing).to.eql(
+              mappedWellbeings(postData.wellbeing)
+            )
 
             const time = new Date(res.body.date_recorded).getTime() / 1000
             const now = new Date().getTime() / 1000

@@ -37,9 +37,20 @@ export const get = (id, limit, callback) => {
       return handleDBErr(err, connection, callback)
     }
 
+    const query = (
+      'SELECT ' +
+        'raw.user_id, ' +
+        'metric.metric_score AS wellbeing, ' +
+        'raw.date_recorded ' +
+      'FROM wellbeing AS raw ' +
+      'INNER JOIN swemwbs_conversion AS metric ' +
+      'ON (raw.wellbeing = metric.raw_score) ' +
+      'WHERE user_id = ? ' +
+      'ORDER BY date_recorded DESC, id DESC LIMIT ?'
+    )
+
     connection.query(
-      'SELECT * FROM wellbeing WHERE user_id = ? ' +
-      'ORDER BY date_recorded DESC, id DESC LIMIT ?',
+      query,
       [id, limit],
       (err, result) => {
         /* istanbul ignore if */
