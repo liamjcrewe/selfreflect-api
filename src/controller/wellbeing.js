@@ -8,10 +8,6 @@ import {
 } from '../model/wellbeing'
 
 export const create = (id, wellbeing, res) => {
-  if (!id || !wellbeing) {
-    return res.status(400).json({ error: 'Missing id or wellbeing field(s)' })
-  }
-
   getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {

@@ -210,6 +210,52 @@ describe('Index and overall app', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
+  it('should reject posting a user\s wellbeing without wellbeing data', done => {
+    const test = id => {
+      const postData = {}
+
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.post('/v1/users/' + id + '/wellbeings')
+          .set('Authorization', 'Bearer ' + token)
+          .send(postData)
+          .end((_, res) => {
+            expect(res.status).to.eql(400)
+
+            expect(res.body.error).to.eql('Missing wellbeing field')
+
+            done()
+          })
+      })
+    }
+
+    // Empty db
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
+  it('should reject posting a user\s wellbeing with invalid wellbeing', done => {
+    const test = id => {
+      const postData = {
+        wellbeing: 1
+      }
+
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.post('/v1/users/' + id + '/wellbeings')
+          .set('Authorization', 'Bearer ' + token)
+          .send(postData)
+          .end((_, res) => {
+            expect(res.status).to.eql(400)
+
+            expect(res.body.error).to.eql(
+              'Invalid wellbeing value - must be an integer between 7 and 35'
+            )
+
+            done()
+          })
+      })
+    }
+
+    // Empty db
+    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+  }),
   it('should handle unknown routes via 404', done => {
     // Can just use id 1, as jwt just needs to decode successfully
     jwt.sign({ id: 1, exp: expiry }, secret, {}, (_, token) => {
