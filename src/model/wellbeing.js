@@ -8,6 +8,7 @@ export const create = (id, wellbeing, callback) => {
       return handleDBErr(err, connection, callback)
     }
 
+
     connection.query(
       'INSERT INTO wellbeing (user_id, wellbeing) VALUES (?, ?)',
       [id, wellbeing],
@@ -17,14 +18,31 @@ export const create = (id, wellbeing, callback) => {
           return handleDBErr(err, connection, callback)
         }
 
-        get(result.insertId, 1, (err, result) => {
-          /* istanbul ignore if */
-          if (err) {
-            return handleDBErr(err, connection, callback)
-          }
+        const query = (
+          'SELECT ' +
+            'raw.id, ' +
+            'raw.user_id, ' +
+            'metric.metric_score AS wellbeing, ' +
+            'raw.date_recorded ' +
+          'FROM wellbeing AS raw ' +
+          'INNER JOIN swemwbs_conversion AS metric ' +
+          'ON (raw.wellbeing = metric.raw_score) ' +
+          'WHERE raw.id = ? '
+        )
 
-          callback(false, result[0])
-        })
+        connection.query(
+          query,
+          [result.insertId],
+          (err, result) => {
+            /* istanbul ignore if */
+            if (err) {
+              console.log(JSON.stringify(err))
+              return handleDBErr(err, connection, callback)
+            }
+
+            callback(false, result[0])
+          }
+        )
       }
     )
   })

@@ -216,9 +216,8 @@ describe('Wellbeing endpoint', () => {
           .send(postData)
           .end((_, res) => {
             expect(res.status).to.eql(201)
-
             expect(res.headers.location).to.eql(
-              '/v1/users/' + res.body.id + '/wellbeings?limit=1'
+              '/v1/users/' + res.body.user_id + '/wellbeings?limit=1'
             )
 
             expect(res.body.user_id).to.eql(id)
@@ -229,7 +228,7 @@ describe('Wellbeing endpoint', () => {
             const time = new Date(res.body.date_recorded).getTime() / 1000
             const now = new Date().getTime() / 1000
 
-            expect(time).to.be.of.at.most(now)
+            expect(time).to.be.at.most(now)
 
             done()
           })
