@@ -25,7 +25,7 @@ export const create = (id, wellbeing, res) => {
       }
 
       res.status(201).set({
-        'Location': '/v1/users/' + result.id + '/wellbeings?limit=1'
+        'Location': '/v1/users/' + result.user_id + '/wellbeings?limit=1'
       }).json(result)
     })
   })
