@@ -90,7 +90,7 @@ A second method to generate tokens is to ```PUT /v1/tokens```, with a valid toke
 
 This endpoint is used to create a user.
 
-**Body fields required**
+###### Body fields required
 
 ```js
 {
@@ -100,7 +100,7 @@ This endpoint is used to create a user.
 ```
 Note that there is currently no validation to check for a valid email; this will accept any string.
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message                      | Extra info                       |
 |-----------------|------------------------------------|----------------------------------|
@@ -108,7 +108,7 @@ Note that there is currently no validation to check for a valid email; this will
 | 409             | Email already in use               |                                  |
 | 500             | DB Error                           | Some DB or server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `201`
 
@@ -136,7 +136,7 @@ A valid id must be provided. Note GET/POST/DELETE /v1/users are not valid endpoi
 
 Get information about a user.
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message              | Extra info                       |
 |-----------------|----------------------------|----------------------------------|
@@ -145,7 +145,7 @@ Get information about a user.
 | 404             | No user found with this id |                                  |
 | 500             | DB Error                   | Some DB or server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `200`
 
@@ -163,7 +163,7 @@ Body:
 
 Update a user.
 
-**Body fields required**
+###### Body fields required
 
 ```js
 {
@@ -173,7 +173,7 @@ Update a user.
 }
 ```
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message                      | Extra info                       |
 |-----------------|------------------------------------|----------------------------------|
@@ -184,7 +184,7 @@ Update a user.
 | 500             | An error occurred                  | Some server error occurred       |
 | 500             | DB Error                           | Some DB or server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `200`
 
@@ -208,7 +208,7 @@ Body:
 
 Delete a user.
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message                      | Extra info                       |
 |-----------------|------------------------------------|----------------------------------|
@@ -217,7 +217,7 @@ Delete a user.
 | 404             | No user found with this id         |                                  |
 | 500             | DB Error                           | Some DB or server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `200`
 
@@ -241,7 +241,7 @@ Get most recent recordings. Can access this resource is two ways:
 
 If the first of these is used, the limit will default to 5. Otherwise, X will be used. However, X must be between 1 and 50 inclusive. If an invalid limit is given, the limit will again default to 5.
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message                                                 | Extra info                       |
 |-----------------|---------------------------------------------------------------|----------------------------------|
@@ -249,7 +249,7 @@ If the first of these is used, the limit will default to 5. Otherwise, X will be
 | 404             | Invalid user id                                               |                                  |
 | 500             | DB Error                                                      | Some DB or server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `200`
 
@@ -297,7 +297,7 @@ Body:
 
 Add a new wellbeing recording.
 
-**Body fields required**
+###### Body fields required
 
 ```js
 {
@@ -307,7 +307,7 @@ Add a new wellbeing recording.
 
 Note that wellbeing must be an integer value between 7 and 35 inclusive. This is designed to be the result of the sum of the answers to a SWEMWBS questionnaire ([available here](http://www2.warwick.ac.uk/fac/med/research/platform/wemwbs/development/swemwbs/)). The wellbeing posted should be the total raw score (sum of scores to each question), as the metric score conversion happens automatically in the API back end.
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message                                                 | Extra info                       |
 |-----------------|---------------------------------------------------------------|----------------------------------|
@@ -318,7 +318,7 @@ Note that wellbeing must be an integer value between 7 and 35 inclusive. This is
 | 404             | No user found with this id                                    |                                  |
 | 500             | DB Error                                                      | Some DB or server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `201`
 
@@ -347,7 +347,7 @@ Date recorded is date in simplified extended ISO format (ISO 8601). That is, YYY
 
 Generate an auth token from a valid email and password.
 
-**Body fields required**
+###### Body fields required
 
 ```js
 {
@@ -356,7 +356,7 @@ Generate an auth token from a valid email and password.
 }
 ```
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message             | Extra info                       |
 |-----------------|---------------------------|----------------------------------|
@@ -364,7 +364,7 @@ Generate an auth token from a valid email and password.
 | 500             | DB Error                  | Some DB or server error occurred |
 | 500             | An error occurred         | Some other server error occurred |
 
-**Success response**
+###### Success response
 
 Success code: `200`
 
@@ -380,7 +380,7 @@ Success code: `200`
 
 Generate an auth token given a valid token in the authorization header.
 
-**Error response(s)**
+###### Error response(s)
 
 | HTTP error code | Error message             | Extra info                       |
 |-----------------|---------------------------|----------------------------------|
@@ -388,7 +388,7 @@ Generate an auth token given a valid token in the authorization header.
 | 500             | DB Error                  | Some DB or server error occurred |
 | 500             | An error occurred         | Some other server error occurred |
 
-**Success response**
+###### Success response
 
 ```js
 {
