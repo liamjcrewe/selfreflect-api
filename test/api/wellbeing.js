@@ -250,7 +250,7 @@ describe('Wellbeing endpoint', () => {
         .set('Authorization', 'Bearer ' + token)
         .send(postData)
         .end((_, res) => {
-          expect(res.status).to.eql(409)
+          expect(res.status).to.eql(404)
 
           expect(res.body.error).to.eql('No user found with this id')
 
