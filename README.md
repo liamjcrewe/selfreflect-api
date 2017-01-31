@@ -133,7 +133,7 @@ A second method to generate tokens is to ```PUT /v1/tokens```, with a valid toke
 
 ##### POST
 
-This endpoint is used to create a user.
+Create a user.
 
 ###### Body fields required
 
