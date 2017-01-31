@@ -19,10 +19,14 @@ describe('Tokens endpoint', () => {
 
           expect(res.body.id).to.eql(id)
 
+          expect(res.body.exp).to.be.a('number')
+
           jwt.verify(res.body.token, secret, (_, decoded) => {
             expect(decoded.id).to.eql(id)
 
             expect(decoded.exp).to.be.a('number')
+
+            expect(res.body.exp).to.eql(decoded.exp)
 
             done()
           })
@@ -82,6 +86,8 @@ describe('Tokens endpoint', () => {
             expect(decoded.id).to.eql(id)
 
             expect(decoded.exp).to.be.a('number')
+
+            expect(res.body.exp).to.eql(decoded.exp)
 
             expect(decoded.exp).to.be.above(expiry)
 

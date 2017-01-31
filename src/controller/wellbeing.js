@@ -15,7 +15,7 @@ export const create = (id, wellbeing, res) => {
     }
 
     if (!user) {
-      return res.status(409).json({ error: 'No user found with this id' })
+      return res.status(404).json({ error: 'No user found with this id' })
     }
 
     createWellbeing(id, wellbeing, (err, result) => {

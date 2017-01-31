@@ -16,7 +16,7 @@ const generateToken = (id, expiry, res) => {
       return res.status(500).json({ error: 'An error occurred' })
     }
 
-    res.status(200).json({ id: id, token: token })
+    res.status(200).json({ id, token, exp: expiry })
   })
 }
 
