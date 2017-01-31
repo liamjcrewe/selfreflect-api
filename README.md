@@ -1,5 +1,47 @@
 # SelfReflect API
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:0 orderedList:0 -->
+- [Get started](#get-started)
+	- [Initial setup](#initial-setup)
+	- [Run server](#run-server)
+	- [Run tests](#run-tests)
+- [API documentation](#api-documentation)
+	- [Auth](#auth)
+	- [Endpoints](#endpoints)
+		- [/v1/users](#v1users)
+			- [POST](#post)
+				- [Body fields required](#body-fields-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+		- [/v1/users/:id](#v1usersid)
+			- [GET (auth token required)](#get-auth-token-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+			- [PUT (auth token required)](#put-auth-token-required)
+				- [Body fields required](#body-fields-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+			- [DELETE (auth token required)](#delete-auth-token-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+		- [/v1/users/:id/wellbeings](#v1usersidwellbeings)
+			- [GET (auth token required)](#get-auth-token-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+			- [POST (auth token required)](#post-auth-token-required)
+				- [Body fields required](#body-fields-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+		- [/v1/tokens](#v1tokens)
+			- [POST](#post)
+				- [Body fields required](#body-fields-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+			- [PUT (auth token required)](#put-auth-token-required)
+				- [Error response(s)](#error-responses)
+				- [Success response](#success-response)
+<!-- /TOC -->
+
 ## Get started
 
 ### Initial setup
