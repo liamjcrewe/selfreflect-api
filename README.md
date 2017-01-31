@@ -41,7 +41,7 @@
 				- [Error response(s)](#error-responses-7)
 				- [Success response](#success-response-7)
 <!-- /TOC -->
-g
+
 ## Get started
 
 ### Initial setup
