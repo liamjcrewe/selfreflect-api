@@ -336,7 +336,7 @@ Body:
 }
 ```
 
-Note date_recorded is date in simplified extended ISO format (ISO 8601). That is, YYYY-MM-DDTHH:mm:ss.sssZ, as seen [here](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)..
+Note date_recorded is date in simplified extended ISO format (ISO 8601). That is, YYYY-MM-DDTHH:mm:ss.sssZ, as seen [here](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString).
 
 ##### POST (auth token required)
 
