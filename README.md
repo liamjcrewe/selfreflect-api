@@ -174,7 +174,7 @@ Body:
 
 #### /v1/users/:id
 
-A valid id must be provided. Note GET/POST/DELETE /v1/users are not valid endpoints, so id must be given.
+A valid id must be provided. Note GET/PUT/DELETE /v1/users are not valid endpoints, so id must be given.
 
 ##### GET (auth token required)
 
