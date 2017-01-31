@@ -7,6 +7,9 @@
 	- [Run tests](#run-tests)
 - [API documentation](#api-documentation)
 	- [Auth](#auth)
+      - [To get a token](#to-get-a-token)
+      - [To use a token (to access restricted endpoints)](#to-use-a-token-to-access-restricted-endpoints)
+      - [To refresh a token close to expiry](#to-refresh-a-token-close-to-expiry)
 	- [Endpoints](#endpoints)
 		- [/v1/users](#v1users)
 			- [POST](#post)
@@ -83,7 +86,7 @@ $ npm run test-coverage
 ### Auth
 Auth for this API works via JSON Web Tokens, or JWTs. A token must be created and sent in the authorization header of subsequent requests (where the endpoint requested requires authorization).
 
-**To get a token**
+#### To get a token
 
 To create and get a token do `POST /v1/tokens`, with a valid email and password in the POST body.
 
@@ -108,7 +111,7 @@ Example response:
 
 Tokens are set to expire one day after they are generated.
 
-**To use a token (to access restricted endpoints)**
+#### To use a token (to access restricted endpoints)
 
 Send the token in the authorization header in the form:
 
@@ -120,7 +123,7 @@ This token will then be verified to check it is valid (and not expired).
 
 *Note that valid means the requested resource can be accessed using this token. This means, if a user with a valid token for user id 5, requests endpoint `/v1/users/6`, this is considered an invalid token. This request will be forbidden and will return error code 403.*
 
-**To refresh a token close to expiry**
+#### To refresh a token close to expiry
 
 A second method to generate tokens is to ```PUT /v1/tokens```, with a valid token in the authorization header as discussed above. This is useful for generating new tokens when tokens are close to expiring. This does not require any body in the request, and will return the same response as creating a token, as discussed above.
 
