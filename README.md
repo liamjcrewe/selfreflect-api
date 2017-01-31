@@ -168,8 +168,7 @@ Body:
 ```js
 {
   "id": created-user-id,
-  "email": "created-user-email",
-  "password": "created-user-password"
+  "email": "created-user-email"
 }
 ```
 
@@ -199,8 +198,7 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "user-email",
-  "password": "user-password"
+  "email": "user-email"
 }
 ```
 
@@ -244,8 +242,7 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "updated-user-email",
-  "password": "updated-user-password"
+  "email": "updated-user-email"
 }
 ```
 
