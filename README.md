@@ -278,6 +278,7 @@ A valid id must be provided.
 ##### GET (auth token required)
 
 Get most recent recordings. Can access this resource is two ways:
+
 1. /v1/users/:id/wellbeings or
 2. /v1/users/:id/wellbeings?limit=X
 
