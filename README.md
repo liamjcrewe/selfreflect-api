@@ -304,31 +304,31 @@ Body:
   results: [
     {
       id: wellbeing-db-id,
-      user_id: user-id,
+      user_id: :id,
       wellbeing: metric-converted-wellbeing-score,
       date_recorded: "date-wellbeing-recorded"
     },
     {
       id: wellbeing-db-id,
-      user_id: user-id,
+      user_id: :id,
       wellbeing: metric-converted-wellbeing-score,
       date_recorded: "date-wellbeing-recorded"
     },
     {
       id: wellbeing-db-id,
-      user_id: user-id,
+      user_id: :id,
       wellbeing: metric-converted-wellbeing-score,
       date_recorded: "date-wellbeing-recorded"
     },
     {
       id: wellbeing-db-id,
-      user_id: user-id,
+      user_id: :id,
       wellbeing: metric-converted-wellbeing-score,
       date_recorded: "date-wellbeing-recorded"
     },
     {
       id: wellbeing-db-id,
-      user_id: user-id,
+      user_id: :id,
       wellbeing: metric-converted-wellbeing-score,
       date_recorded: "date-wellbeing-recorded"
     },
