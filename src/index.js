@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import jwt from 'express-jwt'
+import cors from 'cors'
 
 import {
   create as createUser,
@@ -23,6 +24,12 @@ import { secret } from '../config/auth'
 
 /* Base Setup and Middleware*/
 let app = express()
+
+// Enable cors (Cross-Origin Resource Sharing)
+app.use(cors({
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Accept', 'Content-Type', 'Authorization']
+}))
 
 // Configure app to use bodyParser to get json data from post
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -50,7 +57,6 @@ app.use((err, req, res, next) => {
 })
 
 /* Routes */
-
 const isValidId = id => {
   return Number.isInteger(id) && (id > 0)
 }
