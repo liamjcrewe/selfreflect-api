@@ -214,7 +214,7 @@ Update a user.
 
 ```js
 {
-  "email": "user-email",
+  "email": "user-updated-email",
   "oldPassword": "user-oldPassword",
   "newPassword": "user-newPassword"
 }
@@ -246,7 +246,7 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "updated-user-email"
+  "email": "user-updated-email"
 }
 ```
 
