@@ -263,6 +263,36 @@ describe('Users endpoint', () => {
 
     runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
   }),
+  it('should reject put with duplicate email', done => {
+    const dupeEmail = 'dupe@dupe.com'
+
+    const updatedUser = {
+      email: dupeEmail,
+      oldPassword: 'password',
+      newPassword: 'password'
+    }
+
+    const test = id => {
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.put('/v1/users/' + id)
+          .set('Authorization', 'Bearer ' + token)
+          .send(updatedUser)
+          .end((_, res) => {
+            expect(res.status).to.eql(409)
+
+            expect(res.body.error).to.eql('Email already in use')
+
+            done()
+          })
+      })
+    }
+
+    runOnEmptyDB(() => {
+      insertUser(dupeEmail, passwordHash, () => {
+        insertUser(testEmail, passwordHash, test)
+      })
+    })
+  }),
   it('should delete a user', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {

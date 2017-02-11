@@ -76,26 +76,38 @@ export const put = (id, body, res) => {
       return res.status(500).json({ error: 'DB error' })
     }
 
-    bcrypt.compare(oldPassword, user.password, (err, isMatch) => {
+    getUserByEmail(email, (err, userWithEmail) => {
       /* istanbul ignore if */
       if (err) {
-        return res.status(500).json({ error: 'An error occurred' })
+        return res.status(500).json({ error: 'DB error' })
       }
 
-      if (!isMatch) {
-        return res.status(401).json({ message: 'Invalid password' })
+      // Email in use (by a different user than the current user)
+      if (userWithEmail && userWithEmail.id !== id) {
+        return res.status(409).json({ error: 'Email already in use' })
       }
 
-      putUser(id, email, newPassword, (err, user) => {
+      bcrypt.compare(oldPassword, user.password, (err, isMatch) => {
         /* istanbul ignore if */
         if (err) {
-          return res.status(500).json({ error: 'DB error' })
+          return res.status(500).json({ error: 'An error occurred' })
         }
 
-        // Don't want to send password back
-        delete user.password
+        if (!isMatch) {
+          return res.status(401).json({ message: 'Invalid password' })
+        }
 
-        res.status(200).json(user)
+        putUser(id, email, newPassword, (err, user) => {
+          /* istanbul ignore if */
+          if (err) {
+            return res.status(500).json({ error: 'DB error' })
+          }
+
+          // Don't want to send password back
+          delete user.password
+
+          res.status(200).json(user)
+        })
       })
     })
   })

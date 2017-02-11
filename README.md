@@ -228,6 +228,7 @@ Update a user.
 | 401             | Invalid password                   |                                  |
 | 403             | Forbidden                          | Invalid or no token provided     |
 | 404             | Invalid user id                    |                                  |
+| 409             | Email already in use               |                                  |
 | 500             | An error occurred                  | Some server error occurred       |
 | 500             | DB Error                           | Some DB or server error occurred |
 
