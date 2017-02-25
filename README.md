@@ -144,18 +144,21 @@ Create a user.
 ```js
 {
   "email": "your-email",
-  "password": "your-password"
+  "password": "your-password",
+  "twitter_username": "twitter-username"
 }
 ```
+Twitter username can be an empty string if required.
+
 Note that there is currently no validation to check for a valid email; this will accept any string.
 
 ###### Error response(s)
 
-| HTTP error code | Error message                      | Extra info                       |
-|-----------------|------------------------------------|----------------------------------|
-| 400             | Missing email or password field(s) |                                  |
-| 409             | Email already in use               |                                  |
-| 500             | DB Error                           | Some DB or server error occurred |
+| HTTP error code | Error message         | Extra info                       |
+|-----------------|-----------------------|----------------------------------|
+| 400             | Missing field(s)      |                                  |
+| 409             | Email already in use  |                                  |
+| 500             | DB Error              | Some DB or server error occurred |
 
 ###### Success response
 
@@ -172,7 +175,8 @@ Body:
 ```js
 {
   "id": created-user-id,
-  "email": "created-user-email"
+  "email": "created-user-email",
+  "twitter_username": "twitter-username"
 }
 ```
 
@@ -202,7 +206,8 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "user-email"
+  "email": "user-email",
+  "twitter_username": "twitter-username"
 }
 ```
 
@@ -216,21 +221,22 @@ Update a user.
 {
   "email": "user-updated-email",
   "oldPassword": "user-oldPassword",
-  "newPassword": "user-newPassword"
+  "newPassword": "user-newPassword",
+  "twitter_username": "updated-twitter-username"
 }
 ```
 
 ###### Error response(s)
 
-| HTTP error code | Error message                      | Extra info                       |
-|-----------------|------------------------------------|----------------------------------|
-| 400             | Missing email or password field(s) |                                  |
-| 401             | Invalid password                   |                                  |
-| 403             | Forbidden                          | Invalid or no token provided     |
-| 404             | Invalid user id                    |                                  |
-| 409             | Email already in use               |                                  |
-| 500             | An error occurred                  | Some server error occurred       |
-| 500             | DB Error                           | Some DB or server error occurred |
+| HTTP error code | Error message         | Extra info                       |
+|-----------------|-----------------------|----------------------------------|
+| 400             | Missing field(s)      |                                  |
+| 401             | Invalid password      |                                  |
+| 403             | Forbidden             | Invalid or no token provided     |
+| 404             | Invalid user id       |                                  |
+| 409             | Email already in use  |                                  |
+| 500             | An error occurred     | Some server error occurred       |
+| 500             | DB Error              | Some DB or server error occurred |
 
 ###### Success response
 
@@ -247,7 +253,8 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "user-updated-email"
+  "email": "user-updated-email",
+  "twitter_username": "updated-twitter-username"
 }
 ```
 

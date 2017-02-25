@@ -11,9 +11,10 @@ import bcrypt from 'bcrypt'
 export const create = (body, res) => {
   const email = body.email
   const password = body.password // to be hashed
+  const twitter = body.twitter_username
 
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Missing email or password field(s)' })
+  if (!email || !password || twitter === undefined) {
+    return res.status(400).json({ error: 'Missing field(s)' })
   }
 
   getUserByEmail(email, (err, user) => {
@@ -27,7 +28,7 @@ export const create = (body, res) => {
       return res.status(409).json({ error: 'Email already in use' })
     }
 
-    createUser(email, password, (err, user) => {
+    createUser(email, password, twitter, (err, user) => {
       /* istanbul ignore if */
       if (err) {
         return res.status(500).json({ error: 'DB error' })
@@ -65,9 +66,10 @@ export const put = (id, body, res) => {
   const email = body.email
   const oldPassword = body.oldPassword
   const newPassword = body.newPassword // to be hashed
+  const twitter = body.twitter_username
 
-  if (!email || !oldPassword || !newPassword) {
-    return res.status(400).json({ error: 'Missing email or password field(s)' })
+  if (!email || !oldPassword || !newPassword || twitter === undefined) {
+    return res.status(400).json({ error: 'Missing field(s)' })
   }
 
   getUserById(id, (err, user) => {
@@ -97,7 +99,7 @@ export const put = (id, body, res) => {
           return res.status(401).json({ message: 'Invalid password' })
         }
 
-        putUser(id, email, newPassword, (err, user) => {
+        putUser(id, email, newPassword, twitter, (err, user) => {
           /* istanbul ignore if */
           if (err) {
             return res.status(500).json({ error: 'DB error' })

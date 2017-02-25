@@ -3,6 +3,7 @@ import { secret } from '../../config/auth'
 import jwt from 'jsonwebtoken'
 
 const testEmail = 'test@test.com'
+const twitter_username = 'username'
 // hash for password 'password'
 const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzWgS'
 // 5 minute expiry
@@ -73,7 +74,7 @@ describe('Wellbeing endpoint', () => {
     // Empty db
     runOnEmptyDB(
       // Insert a user
-      () => insertUser(testEmail, passwordHash,
+      () => insertUser(testEmail, passwordHash, twitter_username,
         // Pass user id, insert some wellbeing scores, then run test
         id => insertWellbeings(id, wellbeings(id), test)
       )
@@ -103,7 +104,7 @@ describe('Wellbeing endpoint', () => {
     // Empty db
     runOnEmptyDB(
       // Insert a user
-      () => insertUser(testEmail, passwordHash,
+      () => insertUser(testEmail, passwordHash, twitter_username,
         // Pass user id, insert some wellbeing scores, then run test
         id => insertWellbeings(id, wellbeings(id), test)
       )
@@ -133,7 +134,7 @@ describe('Wellbeing endpoint', () => {
     // Empty db
     runOnEmptyDB(
       // Insert a user
-      () => insertUser(testEmail, passwordHash,
+      () => insertUser(testEmail, passwordHash, twitter_username,
         // Pass user id, insert some wellbeing scores, then run test
         id => insertWellbeings(id, wellbeings(id), test)
       )
@@ -163,7 +164,7 @@ describe('Wellbeing endpoint', () => {
     // Empty db
     runOnEmptyDB(
       // Insert a user
-      () => insertUser(testEmail, passwordHash,
+      () => insertUser(testEmail, passwordHash, twitter_username,
         // Pass user id, insert some wellbeing scores, then run test
         id => insertWellbeings(id, wellbeings(id), test)
       )
@@ -198,7 +199,7 @@ describe('Wellbeing endpoint', () => {
     // Empty db
     runOnEmptyDB(
       // Insert a user
-      () => insertUser(testEmail, passwordHash,
+      () => insertUser(testEmail, passwordHash, twitter_username,
         // Pass user id, insert some wellbeing scores, then run test
         id => insertWellbeings(id, wellbeings(id), test)
       )
@@ -236,7 +237,12 @@ describe('Wellbeing endpoint', () => {
     }
 
     // Empty db
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should reject posting a user\s wellbeing with id of non existent user', done => {
     const id = 9999

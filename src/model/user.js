@@ -4,7 +4,7 @@ import handleDBErr from './error'
 
 const saltRounds = 10
 
-export const create = (email, password, callback) => {
+export const create = (email, password, twitter, callback) => {
   pool.getConnection((err, connection) => {
     /* istanbul ignore if */
     if (err) {
@@ -18,8 +18,8 @@ export const create = (email, password, callback) => {
       }
 
       connection.query(
-        'INSERT INTO user (email, password) VALUES (?, ?)',
-        [email, hash],
+        'INSERT INTO user (email, password, twitter_username) VALUES (?, ?, ?)',
+        [email, hash, twitter],
         (err, result) => {
           /* istanbul ignore if */
           if (err) {
@@ -81,7 +81,7 @@ export const getByEmail = (email, callback) => {
   })
 }
 
-export const put = (id, email, password, callback) => {
+export const put = (id, email, password, twitter, callback) => {
   pool.getConnection((err, connection) => {
     /* istanbul ignore if */
     if (err) {
@@ -95,8 +95,9 @@ export const put = (id, email, password, callback) => {
       }
 
       connection.query(
-        'UPDATE user SET email = ?, password = ? WHERE id = ?',
-        [email, hash, id],
+        'UPDATE user SET email = ?, password = ?, twitter_username = ?' +
+        'WHERE id = ?',
+        [email, hash, twitter, id],
         (err, result) => {
           /* istanbul ignore if */
           if (err) {
