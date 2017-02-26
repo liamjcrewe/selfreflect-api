@@ -30,7 +30,7 @@ export const getTwitterData = (id, res) => {
       .then(response => {
         /* istanbul ignore if */
         if (response.status !== 200) {
-          return res.status(500).json({ error: 'Could not connect to twitter' })
+          return res.status(500).json({ error: 'Could not connect to Twitter' })
         }
 
         response.json()
@@ -40,7 +40,7 @@ export const getTwitterData = (id, res) => {
       })
       .catch(_ => {
         /* istanbul ignore next */
-        return res.status(500).json({ error: 'Could not connect to twitter' })
+        return res.status(500).json({ error: 'Could not connect to Twitter' })
       })
   })
 }
