@@ -75,6 +75,19 @@ describe('Index and overall app', () => {
         })
     })
   }),
+  it('should reject get tweets with invalid user id', done => {
+    jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
+      request.get('/v1/users/' + 0 + '/tweets')
+        .set('Authorization', 'Bearer ' + token)
+        .end((_, res) => {
+          expect(res.status).to.eql(404)
+
+          expect(res.body.error).to.eql('Invalid user id')
+
+          done()
+        })
+    })
+  }),
   it('should report an error for invalid user id type', done => {
     jwt.sign({ id: 'invalid', exp: expiry }, secret, {}, (_, token) => {
       request.get('/v1/users/invalid')
@@ -218,6 +231,28 @@ describe('Index and overall app', () => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.post('/v1/users/' + (id + 1) + '/wellbeings')
+          .set('Authorization', 'Bearer ' + token)
+          .end((_, res) => {
+            expect(res.status).to.eql(403)
+
+            expect(res.body.error).to.eql('Forbidden')
+
+            done()
+          })
+      })
+    }
+
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
+  }),
+  it('should not allow a user to get a different user\'s tweets', done => {
+    const test = id => {
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.get('/v1/users/' + (id + 1) + '/tweets')
           .set('Authorization', 'Bearer ' + token)
           .end((_, res) => {
             expect(res.status).to.eql(403)
