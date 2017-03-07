@@ -435,7 +435,7 @@ A valid id must be provided.
 
 ##### PUT (auth token required)
 
-Connect user to strava by providing an access token (via Strava's authorization redirect)
+Connect user to strava by providing an access token (via Strava's authorization redirect).
 
 ###### Error response(s)
 
