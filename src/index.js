@@ -211,10 +211,6 @@ app.get('/v1/users/:id/strava-data', (req, res) => {
   // getStravaData(id, res)
 })
 
-app.post('/v1/users/recoverpassword', (req, res) => {
-  res.json({ message: 'Password recovery' })
-})
-
 app.post('/v1/tokens', (req, res) => {
   createToken(req.body, res)
 })
