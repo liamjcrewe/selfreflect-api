@@ -1,4 +1,4 @@
 module.exports = {
-  'twitterApi': 'https://api.twitter.com/1.1/statuses/user_timeline.json',
+  'twitterAPI': 'https://api.twitter.com/1.1/statuses/user_timeline.json',
   'token': <TOKEN>
 }
