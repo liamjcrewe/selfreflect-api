@@ -39,7 +39,7 @@ This specific project serves as the backend to SelfReflect, by providing a REST 
 				- [Body fields required](#body-fields-required-2)
 				- [Error response(s)](#error-responses-5)
 				- [Success response](#success-response-5)
-		- [/v1/users/:id/strava-credentials](#v1usersidstravacredentials)
+		- [/v1/users/:id/strava-credentials](#v1usersidstrava-credentials)
 			- [PUT (auth token required)](#put-auth-token-required-1)
 				- [Error response(s)](#error-responses-6)
 				- [Success response](#success-response-6)
