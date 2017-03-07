@@ -74,7 +74,7 @@ describe('Strava credentials endpoint', () => {
           .end((_, res) => {
             expect(res.status).to.eql(400)
 
-            expect(res.body.error).to.eql('No strava code provided')
+            expect(res.body.error).to.eql('No Strava code provided')
 
             done()
           })

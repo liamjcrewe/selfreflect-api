@@ -7,7 +7,7 @@ import { stravaTokenAPI, clientId, clientSecret } from '../../config/strava'
 
 export const updateStravaToken = (id, code, res) => {
   if (!code) {
-    return res.status(400).json({ error: 'No strava code provided' })
+    return res.status(400).json({ error: 'No Strava code provided' })
   }
 
   getUserById(id, (err, user) => {
