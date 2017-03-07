@@ -190,10 +190,6 @@ app.put('/v1/users/:id/strava-credentials', (req, res) => {
     return res.status(403).json({ error: 'Forbidden' })
   }
 
-  if (!req.body.code) {
-    return res.status(400).json({ error: 'No strava code provided' })
-  }
-
   updateStravaToken(id, req.body.code, res)
 })
 
