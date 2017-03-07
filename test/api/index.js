@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { secret } from '../../config/auth'
 
 const testEmail = 'test@test.com'
+const twitter_username = 'username'
 // hash for password 'password'
 const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzWgS'
 // 5 minute expiry
@@ -64,6 +65,19 @@ describe('Index and overall app', () => {
   it('should reject post wellbeings with invalid user id', done => {
     jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
       request.post('/v1/users/' + 0 + '/wellbeings')
+        .set('Authorization', 'Bearer ' + token)
+        .end((_, res) => {
+          expect(res.status).to.eql(404)
+
+          expect(res.body.error).to.eql('Invalid user id')
+
+          done()
+        })
+    })
+  }),
+  it('should reject get tweets with invalid user id', done => {
+    jwt.sign({ id: 0, exp: expiry }, secret, {}, (_, token) => {
+      request.get('/v1/users/' + 0 + '/tweets')
         .set('Authorization', 'Bearer ' + token)
         .end((_, res) => {
           expect(res.status).to.eql(404)
@@ -140,7 +154,12 @@ describe('Index and overall app', () => {
       })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should not allow a user to put a different user', done => {
     const test = id => {
@@ -157,7 +176,12 @@ describe('Index and overall app', () => {
       })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should not allow a user to delete a different user', done => {
     const test = id => {
@@ -174,7 +198,12 @@ describe('Index and overall app', () => {
       })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should not allow a user to get a different user\'s wellbeing', done => {
     const test = id => {
@@ -191,7 +220,12 @@ describe('Index and overall app', () => {
       })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should not allow a user to post a different user\'s wellbeing', done => {
     const test = id => {
@@ -208,7 +242,34 @@ describe('Index and overall app', () => {
       })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
+  }),
+  it('should not allow a user to get a different user\'s tweets', done => {
+    const test = id => {
+      jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
+        request.get('/v1/users/' + (id + 1) + '/tweets')
+          .set('Authorization', 'Bearer ' + token)
+          .end((_, res) => {
+            expect(res.status).to.eql(403)
+
+            expect(res.body.error).to.eql('Forbidden')
+
+            done()
+          })
+      })
+    }
+
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should reject posting a user\s wellbeing without wellbeing data', done => {
     const test = id => {
@@ -229,7 +290,12 @@ describe('Index and overall app', () => {
     }
 
     // Empty db
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should reject posting a user\s wellbeing with invalid wellbeing', done => {
     const test = id => {
@@ -254,7 +320,12 @@ describe('Index and overall app', () => {
     }
 
     // Empty db
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should handle unknown routes via 404', done => {
     // Can just use id 1, as jwt just needs to decode successfully

@@ -39,14 +39,18 @@ This specific project serves as the backend to SelfReflect, by providing a REST 
 				- [Body fields required](#body-fields-required-2)
 				- [Error response(s)](#error-responses-5)
 				- [Success response](#success-response-5)
-		- [/v1/tokens](#v1tokens)
-			- [POST](#post-1)
-				- [Body fields required](#body-fields-required-3)
-				- [Error response(s)](#error-responses-6)
-				- [Success response](#success-response-6)
-			- [PUT (auth token required)](#put-auth-token-required-1)
-				- [Error response(s)](#error-responses-7)
-				- [Success response](#success-response-7)
+    - [/v1/users/:id/tweets](#v1usersidtweets)
+      - [GET (auth token required)](#get-auth-token-required-2)
+        - [Error response(s)](#error-responses-6)
+        - [Success response](#success-response-6)
+    - [/v1/tokens](#v1tokens)
+      - [POST](#post-1)
+        - [Body fields required](#body-fields-required-3)
+        - [Error response(s)](#error-responses-7)
+        - [Success response](#success-response-7)
+      - [PUT (auth token required)](#put-auth-token-required-1)
+        - [Error response(s)](#error-responses-8)
+        - [Success response](#success-response-8)
 <!-- /TOC -->
 
 ## Get started
@@ -144,18 +148,21 @@ Create a user.
 ```js
 {
   "email": "your-email",
-  "password": "your-password"
+  "password": "your-password",
+  "twitter_username": "twitter-username"
 }
 ```
+Twitter username can be an empty string if required.
+
 Note that there is currently no validation to check for a valid email; this will accept any string.
 
 ###### Error response(s)
 
-| HTTP error code | Error message                      | Extra info                       |
-|-----------------|------------------------------------|----------------------------------|
-| 400             | Missing email or password field(s) |                                  |
-| 409             | Email already in use               |                                  |
-| 500             | DB Error                           | Some DB or server error occurred |
+| HTTP error code | Error message         | Extra info                       |
+|-----------------|-----------------------|----------------------------------|
+| 400             | Missing field(s)      |                                  |
+| 409             | Email already in use  |                                  |
+| 500             | DB Error              | Some DB or server error occurred |
 
 ###### Success response
 
@@ -172,7 +179,8 @@ Body:
 ```js
 {
   "id": created-user-id,
-  "email": "created-user-email"
+  "email": "created-user-email",
+  "twitter_username": "twitter-username"
 }
 ```
 
@@ -202,7 +210,8 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "user-email"
+  "email": "user-email",
+  "twitter_username": "twitter-username"
 }
 ```
 
@@ -216,21 +225,22 @@ Update a user.
 {
   "email": "user-updated-email",
   "oldPassword": "user-oldPassword",
-  "newPassword": "user-newPassword"
+  "newPassword": "user-newPassword",
+  "twitter_username": "updated-twitter-username"
 }
 ```
 
 ###### Error response(s)
 
-| HTTP error code | Error message                      | Extra info                       |
-|-----------------|------------------------------------|----------------------------------|
-| 400             | Missing email or password field(s) |                                  |
-| 401             | Invalid password                   |                                  |
-| 403             | Forbidden                          | Invalid or no token provided     |
-| 404             | Invalid user id                    |                                  |
-| 409             | Email already in use               |                                  |
-| 500             | An error occurred                  | Some server error occurred       |
-| 500             | DB Error                           | Some DB or server error occurred |
+| HTTP error code | Error message         | Extra info                       |
+|-----------------|-----------------------|----------------------------------|
+| 400             | Missing field(s)      |                                  |
+| 401             | Invalid password      |                                  |
+| 403             | Forbidden             | Invalid or no token provided     |
+| 404             | Invalid user id       |                                  |
+| 409             | Email already in use  |                                  |
+| 500             | An error occurred     | Some server error occurred       |
+| 500             | DB Error              | Some DB or server error occurred |
 
 ###### Success response
 
@@ -247,7 +257,8 @@ Body:
 ```js
 {
   "id": user-id,
-  "email": "user-updated-email"
+  "email": "user-updated-email",
+  "twitter_username": "updated-twitter-username"
 }
 ```
 
@@ -390,6 +401,29 @@ Body:
 ```
 
 Note date_recorded is date in simplified extended ISO format (ISO 8601). That is, YYYY-MM-DDTHH:mm:ss.sssZ, as seen [here](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString).
+
+#### /v1/users/:id/tweets
+
+A valid id must be provided.
+
+##### GET (auth token required)
+
+Get user's last 200 tweets, or fewer if less than 200 exist.
+
+###### Error response(s)
+
+| HTTP error code | Error message                 | Extra info                       |
+|-----------------|-------------------------------|----------------------------------|
+| 403             | Forbidden                     | Invalid or no token provided     |
+| 404             | Invalid user id               |                                  |
+| 500             | Could not connect to Twitter  |                                  |
+| 500             | DB Error                      | Some DB or server error occurred |
+
+###### Success response
+
+Success code: `200`
+
+Body: As defined by Twitter, [here](https://dev.twitter.com/rest/reference/get/statuses/user_timeline).
 
 #### /v1/tokens
 

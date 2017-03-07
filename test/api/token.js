@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import { secret } from '../../config/auth'
 
 const testEmail = 'test@test.com'
+const twitter_username = 'username'
 // hash for password 'password'
 const passwordHash = '$2a$10$aA9hB383J4FzZmv/L.hhdO7M1Vx6KT4gUQg9nb4nJeh7hrpGTzWgS'
 
@@ -33,7 +34,12 @@ describe('Tokens endpoint', () => {
         })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should not create an access token for an invalid email', done => {
     request.post('/v1/tokens')
@@ -65,7 +71,12 @@ describe('Tokens endpoint', () => {
         })
     }
 
-    runOnEmptyDB(() => insertUser(testEmail, passwordHash, test))
+    runOnEmptyDB(() => insertUser(
+      testEmail,
+      passwordHash,
+      twitter_username,
+      test
+    ))
   }),
   it('should refresh a valid access token', done => {
     // 5 minute expiry

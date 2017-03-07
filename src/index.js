@@ -1,3 +1,6 @@
+require('es6-promise').polyfill()
+require('isomorphic-fetch')
+
 import express from 'express'
 import bodyParser from 'body-parser'
 import jwt from 'express-jwt'
@@ -9,6 +12,8 @@ import {
   put as putUser,
   remove as removeUser
 } from './controller/user'
+
+import { getTwitterData } from './controller/tweets'
 
 import {
   create as createToken,
@@ -156,6 +161,20 @@ app.get('/v1/users/:id/wellbeings', (req, res) => {
   }
 
   getWellbeing(id, limit, res)
+})
+
+app.get('/v1/users/:id/tweets', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  getTwitterData(id, res)
 })
 
 app.post('/v1/users/recoverpassword', (req, res) => {

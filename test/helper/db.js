@@ -28,11 +28,11 @@ export const runOnEmptyDB = callback => {
   })
 }
 
-export const insertUser = (email, hash, callback) => {
+export const insertUser = (email, hash, twitter, callback) => {
   pool.getConnection((_, connection) => {
     connection.query(
-      'INSERT INTO user (email, password) VALUES (?, ?)',
-      [email, hash],
+      'INSERT INTO user (email, password, twitter_username) VALUES (?, ?, ?)',
+      [email, hash, twitter],
       (_, result) => {
         connection.release()
 

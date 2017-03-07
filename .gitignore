@@ -2,4 +2,5 @@ build/
 config/*.js
 coverage/
 node_modules/
+.DS_Store
 
