@@ -1,0 +1,6 @@
+module.exports = {
+  'stravaTokenAPI': 'https://www.strava.com/oauth/token',
+  'stravaDataAPI': 'https://www.strava.com/api/v3/athlete/activities',
+  'clientId': '<CLIENT_ID>',
+  'clientSecret': '<CLIENT_SECRET>'
+}

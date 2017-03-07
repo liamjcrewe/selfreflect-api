@@ -36,6 +36,8 @@ export const create = (body, res) => {
 
       // Don't want to send password back
       delete user.password
+      // or strava token
+      delete user.strava_token
 
       res.status(201).set({
         'Location': '/v1/users/' + user.id
@@ -57,6 +59,8 @@ export const get = (id, res) => {
 
     // Don't want to send password back
     delete user.password
+    // or strava token
+    delete user.strava_token
 
     res.status(200).json(user)
   })
@@ -107,6 +111,8 @@ export const put = (id, body, res) => {
 
           // Don't want to send password back
           delete user.password
+          // or strava token
+          delete user.strava_token
 
           res.status(200).json(user)
         })

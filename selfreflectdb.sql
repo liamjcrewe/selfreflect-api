@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.13)
 # Database: selfreflect
-# Generation Time: 2017-02-25 11:57:47 +0000
+# Generation Time: 2017-03-07 12:53:50 +0000
 # ************************************************************
 
 
@@ -96,6 +96,7 @@ CREATE TABLE `user` (
   `email` varchar(254) NOT NULL DEFAULT '',
   `password` char(60) NOT NULL,
   `twitter_username` varchar(254) DEFAULT NULL,
+  `strava_token` varchar(254) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `email_password` (`email`,`password`)

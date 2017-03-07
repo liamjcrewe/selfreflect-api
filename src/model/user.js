@@ -111,6 +111,28 @@ export const put = (id, email, password, twitter, callback) => {
   })
 }
 
+export const updateStravaToken = (id, stravaToken, callback) => {
+  pool.getConnection((err, connection) => {
+    /* istanbul ignore if */
+    if (err) {
+      return handleDBErr(err, connection, callback)
+    }
+
+    connection.query(
+      'UPDATE user SET strava_token = ? WHERE id = ?',
+      [stravaToken, id],
+      (err, result) => {
+        /* istanbul ignore if */
+        if (err) {
+          return handleDBErr(err, connection, callback)
+        }
+
+        callback(false)
+      }
+    )
+  })
+}
+
 export const remove = (user, callback) => {
   pool.getConnection((err, connection) => {
     /* istanbul ignore if */
