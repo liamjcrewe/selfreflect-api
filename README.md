@@ -39,18 +39,22 @@ This specific project serves as the backend to SelfReflect, by providing a REST 
 				- [Body fields required](#body-fields-required-2)
 				- [Error response(s)](#error-responses-5)
 				- [Success response](#success-response-5)
-    - [/v1/users/:id/tweets](#v1usersidtweets)
-      - [GET (auth token required)](#get-auth-token-required-2)
+    - [/v1/users/:id/strava-credentials](#v1usersidstravacredentials)
+      - [PUT (auth token required)](#put-auth-token-required-1)
         - [Error response(s)](#error-responses-6)
         - [Success response](#success-response-6)
+    - [/v1/users/:id/tweets](#v1usersidtweets)
+      - [GET (auth token required)](#get-auth-token-required-2)
+        - [Error response(s)](#error-responses-7)
+        - [Success response](#success-response-7)
     - [/v1/tokens](#v1tokens)
       - [POST](#post-1)
         - [Body fields required](#body-fields-required-3)
-        - [Error response(s)](#error-responses-7)
-        - [Success response](#success-response-7)
-      - [PUT (auth token required)](#put-auth-token-required-1)
         - [Error response(s)](#error-responses-8)
         - [Success response](#success-response-8)
+      - [PUT (auth token required)](#put-auth-token-required-2)
+        - [Error response(s)](#error-responses-9)
+        - [Success response](#success-response-9)
 <!-- /TOC -->
 
 ## Get started
@@ -424,6 +428,36 @@ Get user's last 200 tweets, or fewer if less than 200 exist.
 Success code: `200`
 
 Body: As defined by Twitter, [here](https://dev.twitter.com/rest/reference/get/statuses/user_timeline).
+
+#### /v1/users/:id/strava-credentials
+
+A valid id must be provided.
+
+##### PUT (auth token required)
+
+Connect user to strava by providing an access token (via Strava's authorization redirect)
+
+###### Error response(s)
+
+| HTTP error code | Error message            | Extra info                                                              |
+|-----------------|--------------------------|-------------------------------------------------------------------------|
+| 400             | No Strava code provided  |                                                                         |
+| 400             | Could not connect Strava | Can either be due to an invalid code, or an issue with Strava's servers |
+| 403             | Forbidden                | Invalid or no token provided                                            |
+| 404             | Invalid user id          |                                                                         |
+| 500             | DB Error                 | Some DB or server error occurred                                        |
+
+###### Success response
+
+Success code: `200`
+
+Body:
+
+```js
+{
+  message: "Strava connected"
+}
+```
 
 #### /v1/tokens
 
