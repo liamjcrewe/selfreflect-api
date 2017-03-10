@@ -51,7 +51,7 @@ export const updateStravaToken = (id, code, res) => {
       })
       .catch(_ => {
         /* istanbul ignore next */
-        return res.status(500).json({ error: 'Could not connect to Strava' })
+        return res.status(500).json({ error: 'Could not connect Strava' })
       })
   })
 }
