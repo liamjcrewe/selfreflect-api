@@ -16,6 +16,7 @@ import {
 import { getTwitterData } from './controller/tweets'
 
 import { updateStravaToken } from './controller/stravaCredentials'
+import { getStravaData } from './controller/stravaData'
 
 import {
   create as createToken,
@@ -204,7 +205,7 @@ app.get('/v1/users/:id/strava-data', (req, res) => {
     return res.status(403).json({ error: 'Forbidden' })
   }
 
-  // getStravaData(id, res)
+  getStravaData(id, res)
 })
 
 app.post('/v1/tokens', (req, res) => {
