@@ -36,7 +36,6 @@ export const create = (id, wellbeing, callback) => {
           (err, result) => {
             /* istanbul ignore if */
             if (err) {
-              console.log(JSON.stringify(err))
               return handleDBErr(err, connection, callback)
             }
 

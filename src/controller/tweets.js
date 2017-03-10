@@ -1,5 +1,5 @@
 import { getById as getUserById } from '../model/user'
-import { twitterApi, token } from '../../config/twitter'
+import { twitterAPI, token } from '../../config/twitter'
 
 export const getTwitterData = (id, res) => {
   getUserById(id, (err, user) => {
@@ -20,7 +20,7 @@ export const getTwitterData = (id, res) => {
 
     const query = '?count=200&trim_user=true&exclude_replies=true&screen_name='
 
-    fetch(twitterApi + query + user.twitter_username, {
+    fetch(twitterAPI + query + user.twitter_username, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

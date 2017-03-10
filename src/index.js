@@ -15,6 +15,8 @@ import {
 
 import { getTwitterData } from './controller/tweets'
 
+import { updateStravaToken } from './controller/stravaCredentials'
+
 import {
   create as createToken,
   refresh as refreshToken
@@ -177,8 +179,32 @@ app.get('/v1/users/:id/tweets', (req, res) => {
   getTwitterData(id, res)
 })
 
-app.post('/v1/users/recoverpassword', (req, res) => {
-  res.json({ message: 'Password recovery' })
+app.put('/v1/users/:id/strava-credentials', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  updateStravaToken(id, req.body.code, res)
+})
+
+app.get('/v1/users/:id/strava-data', (req, res) => {
+  const id = parseInt(req.params.id, 10)
+
+  if (!isValidId(id)) {
+    return res.status(404).json({ error: 'Invalid user id' })
+  }
+
+  if (req.token.id !== id) {
+    return res.status(403).json({ error: 'Forbidden' })
+  }
+
+  // getStravaData(id, res)
 })
 
 app.post('/v1/tokens', (req, res) => {
