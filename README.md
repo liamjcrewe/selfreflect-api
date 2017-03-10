@@ -45,6 +45,7 @@ This specific project serves as the backend to SelfReflect, by providing a REST 
 				- [Success response](#success-response-6)
 		- [/v1/users/:id/strava-credentials](#v1usersidstrava-credentials)
 			- [PUT (auth token required)](#put-auth-token-required-1)
+				- [Body fields required](#body-fields-required-3)
 				- [Error response(s)](#error-responses-7)
 				- [Success response](#success-response-7)
 		- [/v1/tokens](#v1tokens)
@@ -436,6 +437,14 @@ A valid id must be provided.
 ##### PUT (auth token required)
 
 Connect user to strava by providing an access token (via Strava's authorization redirect).
+
+###### Body fields required
+
+```js
+{
+  "code": <code>
+}
+```
 
 ###### Error response(s)
 
