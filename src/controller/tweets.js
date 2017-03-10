@@ -12,7 +12,9 @@ export const getTwitterData = (id, res) => {
       return res.status(404).json({ error: 'No user found with this id' })
     }
 
-    if (!user.twitter_username) {
+    const twitterUsername = user.twitter_username
+
+    if (!twitterUsername) {
       return res.status(400).json({
         error: 'No twitter username provided for this user'
       })
@@ -20,7 +22,7 @@ export const getTwitterData = (id, res) => {
 
     const query = '?count=200&trim_user=true&exclude_replies=true&screen_name='
 
-    fetch(twitterAPI + query + user.twitter_username, {
+    fetch(twitterAPI + query + twitterUsername, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
