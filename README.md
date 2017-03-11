@@ -48,14 +48,18 @@ This specific project serves as the backend to SelfReflect, by providing a REST 
 				- [Body fields required](#body-fields-required-3)
 				- [Error response(s)](#error-responses-7)
 				- [Success response](#success-response-7)
+		- [/v1/users/:id/strava-data](#v1usersidstrava-data)
+			- [GET (auth token required)](#get-auth-token-required-3)
+				- [Error response(s)](#error-responses-8)
+				- [Success response](#success-response-8)
 		- [/v1/tokens](#v1tokens)
 			- [POST](#post-1)
 				- [Body fields required](#body-fields-required-3)
-				- [Error response(s)](#error-responses-8)
-				- [Success response](#success-response-8)
-			- [PUT (auth token required)](#put-auth-token-required-2)
 				- [Error response(s)](#error-responses-9)
 				- [Success response](#success-response-9)
+			- [PUT (auth token required)](#put-auth-token-required-2)
+				- [Error response(s)](#error-responses-10)
+				- [Success response](#success-response-10)
 <!-- /TOC -->
 
 ## Get started
@@ -467,6 +471,31 @@ Body:
   message: "Strava connected"
 }
 ```
+
+#### /v1/users/:id/strava-data
+
+A valid id must be provided.
+
+##### GET (auth token required)
+
+Get user's last 200 activities, or fewer if less than 200 exist.
+
+###### Error response(s)
+
+| HTTP error code | Error message                      | Extra info                                                              |
+|-----------------|------------------------------------|-------------------------------------------------------------------------|
+| 400             | No Strava code provided            |                                                                         |
+| 400             | Strava not connected for this user | Can either be due to an invalid code, or an issue with Strava's servers |
+| 403             | Forbidden                          | Invalid or no token provided                                            |
+| 404             | Invalid user id                    |                                                                         |
+| 500             | Could not connect to Strava        | Most likely an error with Strava's API                                  |
+| 500             | DB Error                           | Some DB or server error occurred                                        |
+
+###### Success response
+
+Success code: `200`
+
+Body: As defined by Strava, [here](http://strava.github.io/api/v3/activities/#list-athlete-activities).
 
 #### /v1/tokens
 

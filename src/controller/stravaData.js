@@ -37,7 +37,7 @@ export const getStravaData = (id, res) => {
       .then(response => {
         /* istanbul ignore if */
         if (response.status !== 200) {
-          return res.status(400).json({ error: 'Could not connect to Strava' })
+          return res.status(500).json({ error: 'Could not connect to Strava' })
         }
 
         response.json()
