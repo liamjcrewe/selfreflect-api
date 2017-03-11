@@ -376,7 +376,7 @@ describe('Index and overall app', () => {
       test
     ))
   }),
-  it('should reject posting a user\s wellbeing with invalid wellbeing', done => {
+  it('should reject posting a user\'s wellbeing with invalid wellbeing', done => {
     const test = id => {
       const postData = {
         wellbeing: 1
