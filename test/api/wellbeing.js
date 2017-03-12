@@ -50,7 +50,7 @@ const mappedWellbeings = raw => {
 }
 
 describe('Wellbeing endpoint', () => {
-  it('should get a user\s last 5 wellbeings with limit specified', done => {
+  it('should get a user\'s last 5 wellbeings with limit specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=5')
@@ -80,7 +80,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\s last 5 wellbeings without limit specified', done => {
+  it('should get a user\'s last 5 wellbeings without limit specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings')
@@ -110,7 +110,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\s last 5 wellbeings with invalid limit specified', done => {
+  it('should get a user\'s last 5 wellbeings with invalid limit specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=invalid')
@@ -140,7 +140,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\s last 5 wellbeings with limit larger than max (50)', done => {
+  it('should get a user\'s last 5 wellbeings with limit larger than max (50)', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=9999')
@@ -170,7 +170,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\s last 10 wellbeings with limit of 10 specified', done => {
+  it('should get a user\'s last 10 wellbeings with limit of 10 specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=10')
@@ -205,7 +205,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should post a user\s wellbeing', done => {
+  it('should post a user\'s wellbeing', done => {
     const test = id => {
       const postData = {
         wellbeing: 12
@@ -244,7 +244,7 @@ describe('Wellbeing endpoint', () => {
       test
     ))
   }),
-  it('should reject posting a user\s wellbeing with id of non existent user', done => {
+  it('should reject posting a user\'s wellbeing with id of non existent user', done => {
     const id = 9999
 
     const postData = {

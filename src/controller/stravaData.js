@@ -1,7 +1,11 @@
-import { getById as getUserById } from '../model/user'
-import { twitterAPI, token } from '../../config/twitter'
+import {
+  updateStravaToken as storeStravaToken,
+  getById as getUserById
+} from '../model/user'
 
-export const getTwitterData = (id, res) => {
+import { stravaDataAPI, clientId, clientSecret } from '../../config/strava'
+
+export const getStravaData = (id, res) => {
   getUserById(id, (err, user) => {
     /* istanbul ignore if */
     if (err) {
@@ -12,27 +16,28 @@ export const getTwitterData = (id, res) => {
       return res.status(404).json({ error: 'No user found with this id' })
     }
 
-    const twitterUsername = user.twitter_username
+    const stravaToken = user.strava_token
 
-    if (!twitterUsername) {
+    if (!stravaToken) {
       return res.status(400).json({
-        error: 'No twitter username provided for this user'
+        error: 'Strava not connected for this user'
       })
     }
 
-    const query = '?count=200&trim_user=true&exclude_replies=true&screen_name='
-
-    fetch(twitterAPI + query + twitterUsername, {
+    fetch(stravaDataAPI, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      }
+        'Authorization': 'Bearer ' + stravaToken
+      },
+      body: JSON.stringify({
+        'per_page': 200
+      })
     })
       .then(response => {
         /* istanbul ignore if */
         if (response.status !== 200) {
-          return res.status(500).json({ error: 'Could not connect to Twitter' })
+          return res.status(500).json({ error: 'Could not connect to Strava' })
         }
 
         response.json()
@@ -42,7 +47,7 @@ export const getTwitterData = (id, res) => {
       })
       .catch(_ => {
         /* istanbul ignore next */
-        return res.status(500).json({ error: 'Could not connect to Twitter' })
+        return res.status(500).json({ error: 'Could not connect to Strava' })
       })
   })
 }

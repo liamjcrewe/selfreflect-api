@@ -32,7 +32,7 @@ describe('Tweets endpoint', () => {
       test
     ))
   }),
-  it('should reject getting a user\s tweets with id of non existent user', done => {
+  it('should reject getting a user\'s tweets with id of non existent user', done => {
     const id = 9999
 
     jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
@@ -69,7 +69,7 @@ describe('Tweets endpoint', () => {
       test
     ))
   }),
-  it('should reject getting a user\s tweets if user\'s twitter username not given', done => {
+  it('should reject getting a user\'s tweets if user\'s twitter username not given', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/tweets')
