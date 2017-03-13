@@ -307,7 +307,9 @@ Get most recent recordings. Can access this resource is two ways:
 1. /v1/users/:id/wellbeings or
 2. /v1/users/:id/wellbeings?limit=X
 
-If the first of these is used, the limit will default to 5. Otherwise, X will be used. However, X must be between 1 and 50 inclusive. If an invalid limit is given, the limit will again default to 5.
+If the first of these is used, the limit will default to 1. Otherwise, X will be used.
+
+X must be between 1 and 200 inclusive. If an invalid limit is given, the limit will again default to 1.
 
 ###### Error response(s)
 

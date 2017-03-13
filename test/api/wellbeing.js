@@ -50,10 +50,10 @@ const mappedWellbeings = raw => {
 }
 
 describe('Wellbeing endpoint', () => {
-  it('should get a user\'s last 5 wellbeings with limit specified', done => {
+  it('should get a user\'s last wellbeing with limit specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
-        request.get('/v1/users/' + id + '/wellbeings?limit=5')
+        request.get('/v1/users/' + id + '/wellbeings?limit=1')
           .set('Authorization', 'Bearer ' + token)
           .end((_, res) => {
             expect(res.status).to.eql(200)
@@ -61,10 +61,6 @@ describe('Wellbeing endpoint', () => {
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
-            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
-            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
-            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
-            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -80,7 +76,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\'s last 5 wellbeings without limit specified', done => {
+  it('should get a user\'s last wellbeing without limit specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings')
@@ -91,10 +87,6 @@ describe('Wellbeing endpoint', () => {
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
-            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
-            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
-            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
-            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -110,7 +102,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\'s last 5 wellbeings with invalid limit specified', done => {
+  it('should get a user\'s last wellbeing with invalid limit specified', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=invalid')
@@ -121,10 +113,6 @@ describe('Wellbeing endpoint', () => {
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
-            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
-            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
-            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
-            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
@@ -140,7 +128,7 @@ describe('Wellbeing endpoint', () => {
       )
     )
   }),
-  it('should get a user\'s last 5 wellbeings with limit larger than max (50)', done => {
+  it('should get a user\'s last wellbeing with limit larger than max (50)', done => {
     const test = id => {
       jwt.sign({ id: id, exp: expiry }, secret, {}, (_, token) => {
         request.get('/v1/users/' + id + '/wellbeings?limit=9999')
@@ -151,10 +139,6 @@ describe('Wellbeing endpoint', () => {
             expect(res.body.id).to.eql(id)
 
             expect(res.body.results[0].wellbeing).to.eql(mappedWellbeings(16))
-            expect(res.body.results[1].wellbeing).to.eql(mappedWellbeings(15))
-            expect(res.body.results[2].wellbeing).to.eql(mappedWellbeings(14))
-            expect(res.body.results[3].wellbeing).to.eql(mappedWellbeings(13))
-            expect(res.body.results[4].wellbeing).to.eql(mappedWellbeings(12))
 
             done()
           })
