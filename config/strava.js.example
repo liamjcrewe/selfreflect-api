@@ -3,5 +3,5 @@ module.exports = {
   'stravaDataAPI': 'https://www.strava.com/api/v3/athlete/activities',
   'clientId': '<CLIENT_ID>',
   'clientSecret': '<CLIENT_SECRET>',
-  'stravaTestCode': '<STRAVA_TEST_CODE>'
+  'stravaTestCode': '26878014e531752c40dd8e041f562941f7b7b2e7'
 }
