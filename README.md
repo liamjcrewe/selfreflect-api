@@ -77,8 +77,10 @@ $ npm run build
 Then, create the following config files:
 * `config/auth.js`
 * `config/db.js`
+* `config/strava.js`
+* `config/twitter.js`
 
-Example config files have been included in the config directory for both of these.
+Example config files have been included in the config directory for all of these.
 
 ### Run server
 
