@@ -159,8 +159,8 @@ app.get('/v1/users/:id/wellbeings', (req, res) => {
   let limit = parseInt(req.query.limit, 10)
 
   // If none given , or above maximum allowed (50 for now)
-  if (!limit || limit > 50) {
-    limit = 5
+  if (!limit || limit > 200) {
+    limit = 1
   }
 
   getWellbeing(id, limit, res)
