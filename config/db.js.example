@@ -1,7 +1,7 @@
 module.exports = {
-  'host': <HOST>,
-  'user': <USER>,
-  'password': <PASSWORD>,
-  'database': <DATABASE>,
+  'host': '<HOST>',
+  'user': '<USER>',
+  'password': '<PASSWORD>',
+  'database': '<DATABASE>',
   'connectionLimit': <CONNECTION_LIMIT>
 }
