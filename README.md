@@ -421,7 +421,7 @@ A valid id must be provided.
 
 ##### GET (auth token required)
 
-Get user's last 200 tweets, or fewer if less than 200 exist.
+Get user's timeline, as defined [here](https://dev.twitter.com/rest/reference/get/statuses/user_timeline).
 
 ###### Error response(s)
 
